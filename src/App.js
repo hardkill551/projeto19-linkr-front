@@ -1,6 +1,13 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import TimelinePage from "./pages/TimelinePage";
+
 function App() {
   return (
-    <div className="App"></div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/timeline" element={<TimelinePage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
