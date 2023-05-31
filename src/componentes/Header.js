@@ -1,52 +1,115 @@
 import styled from "styled-components";
 import { FaGreaterThan } from 'react-icons/fa';
+import { useState } from "react";
+import { BiSearch } from "react-icons/bi" 
 
 export default function Header() {
+    const [findActive, setFindActive] = useState(false)
     return (
         <HeaderContainer>
             <Logo>
                 linkr
             </Logo>
-            <SearchContainer>
-                <input placeholder="Search for people"/>
-                <FindUsers>
-                    <User>
-                        <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
-                        <p>name</p>
-                    </User>
-                </FindUsers>
-            </SearchContainer>
-            <div>
+            <InputContainer>
+                <StyledInput placeholder="Search for people"/>
+                <Icon/>
+            </InputContainer>
+            <FindUsers findActive={findActive}>
+                <User>
+                    <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
+                    <p>name</p>
+                </User>
+                <User>
+                    <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
+                    <p>name</p>
+                </User>
+                <User>
+                    <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
+                    <p>name</p>
+                </User>
+            </FindUsers>
+            <MyContent>
                 <Menu />
                 <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
-            </div>
+            </MyContent>
         </HeaderContainer>
     )
 }
-const FindUsers = styled.div`
+
+const InputContainer = styled.div`
+    position: relative;
+    display: inline-block;
+`
+const StyledInput = styled.input`
     width: 563px;
-    background: #E7E7E7;
-    border-radius: 8px;
+    height: 45px;
+    padding-right: 25px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+    font-size: 19px;
+    line-height: 23px;
+    font-weight: 400;
+    padding-left: 14px;
+    margin-left:-6px;
+    ::placeholder {
+        color: #c6c6c6;
+    }
+`;
+const Icon = styled(BiSearch)`
     position: absolute;
+    z-index: 2;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    width: 21px;
+    height: 21px;
+    background-image: url('path/to/search-icon.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    color: #C6C6C6;
+    margin-right: 15px;
+`
+const FindUsers = styled.ul`
+    width: 563px;
+    border-radius: 8px;
+    background-color: #E7E7E7;
+    margin-top: 60px;
+    position: fixed;
     left: 50%;
-    top: 50;
+    top: -46px;
     transform: translateX(-50%);
-    min-height: 20px;
-    padding-top:43px;
-    display: none;
+    padding-top: 43px;
+    padding-bottom: 23px;
+    padding-left: 17px;
+    display: ${({findActive}) => findActive?"block":"none"};
 `
 
 const User = styled.div`
     display: flex;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 23px;
+    font-family:"Lato";
+    color: #515151;
+    margin-top: 15px;
+    align-items: center;
     img{
         width: 39px;
         height: 39px;
+        border-radius: 50%;
+        margin-right: 12px;
     }
 `
-const SearchContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    position: relative;
+const MyContent = styled.div`
+    gap:17px;
+    display:flex;
+    align-items: center;
 `
 const HeaderContainer = styled.div`
     height: 72px;
@@ -56,30 +119,6 @@ const HeaderContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 10px 28px;
-    div{
-        gap:17px;
-        display:flex;
-        align-items: center;
-    }
-    input{
-        width: 563px;
-        height: 43px;
-        border-radius: 8px;
-        font-size: 19px;
-        line-height: 23px;
-        font-weight: 400;
-        padding-left: 14px;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-        border: none;
-        outline: none;
-        position: absolute;
-        ::placeholder{
-            color: #C6C6C6;
-        }
-    }
 `
 const Logo = styled.div`
     font-family: 'Passion One';
