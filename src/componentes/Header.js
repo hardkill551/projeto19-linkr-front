@@ -2,16 +2,28 @@ import styled from "styled-components";
 import { FaGreaterThan } from 'react-icons/fa';
 import { useState } from "react";
 import { BiSearch } from "react-icons/bi" 
+import { DebounceInput } from "react-debounce-input";
 
 export default function Header() {
     const [findActive, setFindActive] = useState(false)
+    const [search, setSearch] = useState("")
+    console.log(search)
+    function SearchUsers(e){
+        setSearch(e.target.value)
+    }
     return (
         <HeaderContainer>
             <Logo>
                 linkr
             </Logo>
             <InputContainer>
-                <StyledInput placeholder="Search for people"/>
+                <StyledInput
+                    placeholder="Search for people"
+                    value={search}
+                    minLength={3}
+                    debounceTimeout={300}
+                    onChange={SearchUsers}
+                    />
                 <Icon/>
             </InputContainer>
             <FindUsers findActive={findActive}>
@@ -40,7 +52,7 @@ const InputContainer = styled.div`
     position: relative;
     display: inline-block;
 `
-const StyledInput = styled.input`
+const StyledInput = styled(DebounceInput)`
     width: 563px;
     height: 45px;
     padding-right: 25px;
