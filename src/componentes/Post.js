@@ -2,15 +2,6 @@ import styled from "styled-components";
 
 export default function Post({ link, message, name, picture }) {
 
-
-    // urlMetadata(link)
-    //     .then((metadata) => {
-    //         console.log(metadata)
-    //         // do stuff with the metadata
-    //     },
-    //         (err) => {
-    //             console.log(err)
-    //         })
     return (
         <PostContainer data-test="post">
             <ProfilePicture src={picture} alt="profile-picture" />
