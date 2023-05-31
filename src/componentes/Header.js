@@ -7,6 +7,15 @@ export default function Header() {
             <Logo>
                 linkr
             </Logo>
+            <SearchContainer>
+                <input placeholder="Search for people"/>
+                <FindUsers>
+                    <User>
+                        <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
+                        <p>name</p>
+                    </User>
+                </FindUsers>
+            </SearchContainer>
             <div>
                 <Menu />
                 <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
@@ -14,7 +23,31 @@ export default function Header() {
         </HeaderContainer>
     )
 }
+const FindUsers = styled.div`
+    width: 563px;
+    background: #E7E7E7;
+    border-radius: 8px;
+    position: absolute;
+    left: 50%;
+    top: 50;
+    transform: translateX(-50%);
+    min-height: 20px;
+    padding-top:43px;
+    display: none;
+`
 
+const User = styled.div`
+    display: flex;
+    img{
+        width: 39px;
+        height: 39px;
+    }
+`
+const SearchContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+`
 const HeaderContainer = styled.div`
     height: 72px;
     width: 100%;
@@ -27,6 +60,25 @@ const HeaderContainer = styled.div`
         gap:17px;
         display:flex;
         align-items: center;
+    }
+    input{
+        width: 563px;
+        height: 43px;
+        border-radius: 8px;
+        font-size: 19px;
+        line-height: 23px;
+        font-weight: 400;
+        padding-left: 14px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        border: none;
+        outline: none;
+        position: absolute;
+        ::placeholder{
+            color: #C6C6C6;
+        }
     }
 `
 const Logo = styled.div`
