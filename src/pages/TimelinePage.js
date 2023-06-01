@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../axios";
 import Post from "../componentes/Post";
 import { ThreeDots } from 'react-loader-spinner'
-import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
+import { ContentContainer, Posts, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
@@ -124,22 +124,6 @@ const Loading = styled.div`
         margin-bottom: 5px;
         margin-top:5px;
     }
-`
-
-const Posts = styled.div`
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-p{
-    margin-top:30px;
-    display:${(props) => (props.posts.length !== 0 ? "none" : "flex")};
-    font-family: 'Oswald';
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 36px;
-    color: #ffffff;
-}
 `
 
 const PublishingContainer = styled.div`
