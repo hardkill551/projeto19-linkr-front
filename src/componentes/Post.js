@@ -1,18 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription }) {
-
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id }) {
+    const navigate = useNavigate();
     function redirectToUrl(link) {
         window.open(link);
     }
-
     console.log(linkImage)
-
+    function goToUserPage(id){
+        navigate("/user/"+id)
+    }
     return (
         <PostContainer data-test="post">
             <ProfilePicture src={picture} alt="profile-picture" />
             <div>
-                <h2>{name}</h2>
+                <h2 onClick={()=>goToUserPage(id)}>{name}</h2>
                 <h3>{message}</h3>
                 <LinkContainer onClick={() => redirectToUrl(link)}>
                     <div>
@@ -87,6 +89,7 @@ const PostContainer = styled.div`
         line-height: 23px;
         color: #FFFFFF;
         margin-bottom: 7px;
+        cursor: pointer;
     }
     h3 {
         font-family: 'Lato';
