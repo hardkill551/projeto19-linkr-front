@@ -10,6 +10,7 @@ export default function TimelinePage() {
     const token = localStorage.getItem("token");
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
+    const [error, setError] = useState(false);
 
     useEffect(() => {
 
@@ -23,11 +24,24 @@ export default function TimelinePage() {
 
         request.then(response => { setPosts(response.data) });
         request.catch(err => {
-            console.log("An error occured while trying to fetch the posts, please refresh the page")
+            setError(true);
         });
 
         //   }
     }, []);
+
+    if (error) {
+        return (
+            <>
+                <Header />
+                <TimelineContainer>
+                    <ErrorContainer>
+                        <h1>An error occurred while trying to fetch the posts, please refresh the page.</h1>
+                    </ErrorContainer>
+                </TimelineContainer>
+            </>
+        );
+    }
 
     if (posts === null) {
         return (
@@ -84,7 +98,7 @@ export default function TimelinePage() {
                     </div>
                 </PublishingContainer>
                 <Posts posts={posts}>
-                    {posts.map(p => <Post key={p.id} link={p.link} message={p.message} name={p.name} picture={p.picture} />)}
+                    {posts.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} />)}
                     <p data-test="message">There are no posts yet</p>
                 </Posts>
 
@@ -95,10 +109,10 @@ export default function TimelinePage() {
 
 const Loading = styled.div`
     width: 611px;
-    height: 109px;
+    height: 100vh;
     display:flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     h2 {
         font-family: 'Oswald';
@@ -202,6 +216,13 @@ const TimelineContainer = styled.div`
 const ContentContainer = styled.div`
     width: 611px;
     height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const ErrorContainer = styled.div`
+    width: 611px;
+    height: 100vh;
     margin-left: auto;
     margin-right: auto;
 `

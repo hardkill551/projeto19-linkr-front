@@ -1,6 +1,12 @@
 import styled from "styled-components";
 
-export default function Post({ link, message, name, picture }) {
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription }) {
+
+    function redirectToUrl(link) {
+        window.open(link);
+    }
+
+    console.log(linkImage)
 
     return (
         <PostContainer data-test="post">
@@ -8,15 +14,15 @@ export default function Post({ link, message, name, picture }) {
             <div>
                 <h2>{name}</h2>
                 <h3>{message}</h3>
-                <LinkContainer>
+                <LinkContainer onClick={() => redirectToUrl(link)}>
                     <div>
                         <h4>
-                            Como aplicar o Material UI em um Projeto React
+                            {linkTitle}
                         </h4>
-                        <p>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</p>
-                        <a href="www.com.br">https://www.com</a>
+                        <p>{linkDescription}</p>
+                        <a href={link}>{link}</a>
                     </div>
-                    <img src="https://www.freecodecamp.org/news/content/images/2021/06/Ekran-Resmi-2019-11-18-18.08.13.png"></img>
+                    <img src={linkImage} alt="urlImage"></img>
                 </LinkContainer>
             </div>
         </PostContainer>
@@ -31,6 +37,7 @@ const LinkContainer = styled.div`
     display:flex;
     font-family: 'Lato';
     font-weight: 400;
+    cursor:pointer;
     div{
         display:flex;
         flex-direction: column;
@@ -87,7 +94,11 @@ const PostContainer = styled.div`
         font-size: 17px;
         line-height: 20px;
         color: #B7B7B7;
-        margin-bottom: 7px;
+        margin-bottom: 12px;
+        max-height: 52px;
+    }
+    div{
+        width:502px;
     }
 `
 
