@@ -9,6 +9,7 @@ export default function Header() {
     const [search, setSearch] = useState("")
     console.log(search)
     function SearchUsers(e){
+        setFindActive(true)
         setSearch(e.target.value)
     }
     return (
