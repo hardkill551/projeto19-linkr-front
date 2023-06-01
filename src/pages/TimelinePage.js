@@ -7,10 +7,16 @@ import Post from "../componentes/Post";
 import { ThreeDots } from 'react-loader-spinner'
 
 export default function TimelinePage() {
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
+    const token = "1234";
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
     const [error, setError] = useState(false);
+    const [link, setLink] = useState("");
+    const [message, setMessage] = useState("");
+    const [disabled, setDisabled] = useState(false);
+    const [buttonText, setButtonText] = useState("Publishing");
+    const [reloadPage, setReloadPage] = useState(false);
 
     useEffect(() => {
 
@@ -28,7 +34,7 @@ export default function TimelinePage() {
         });
 
         //   }
-    }, []);
+    }, [reloadPage]);
 
     if (error) {
         return (
@@ -43,6 +49,40 @@ export default function TimelinePage() {
         );
     }
 
+    function createPost(e) {
+        e.preventDefault();
+
+        if (message.length > 120) {
+            return alert("Caption cannot be longer than 120 characters.");
+        }
+
+        setDisabled(true);
+        setButtonText("Publishing...");
+
+        const obj = {
+            link,
+            message
+        }
+
+        const request = api.post("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
+
+        request.then(() => {
+            setDisabled(false);
+            setButtonText("Publishing");
+            setLink("");
+            setMessage("");
+            setPosts(null);
+            setReloadPage(true);
+        });
+
+        request.catch(err => {
+            alert("There was an error publishing your link.");
+            setDisabled(false);
+            setButtonText("Publishing");
+        })
+
+    }
+
     if (posts === null) {
         return (
             <><Header />
@@ -53,10 +93,10 @@ export default function TimelinePage() {
                             <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
                             <div>
                                 <h2>What are you going to share today?</h2>
-                                <form>
-                                    <input data-test="link" placeholder="Link" />
-                                    <input data-test="description" className="captionInput" placeholder="Caption" />
-                                    <PublishButton data-test="publish-btn">Publish</PublishButton>
+                                <form disabled={disabled} onSubmit={createPost}>
+                                    <input data-test="link" disabled={disabled} type="url" required placeholder="Link" value={link} onChange={e => setLink(e.target.value)} />
+                                    <textarea data-test="description" className="captionInput" disabled={disabled} type="text" placeholder="Caption" value={message} onChange={e => setMessage(e.target.value)} />
+                                    <PublishButton data-test="publish-btn" disabled={disabled} type="submit">{buttonText}</PublishButton>
                                 </form>
 
                             </div>
@@ -89,10 +129,10 @@ export default function TimelinePage() {
                     <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
                     <div>
                         <h2>What are you going to share today?</h2>
-                        <form>
-                            <input placeholder="Link" />
-                            <input className="captionInput" placeholder="Caption" />
-                            <PublishButton>Publish</PublishButton>
+                        <form disabled={disabled} onSubmit={createPost}>
+                            <input data-test="link" disabled={disabled} type="url" required placeholder="Link" value={link} onChange={e => setLink(e.target.value)} />
+                            <textarea data-test="description" className="captionInput" disabled={disabled} type="text" placeholder="Caption" value={message} onChange={e => setMessage(e.target.value)} />
+                            <PublishButton data-test="publish-btn" disabled={disabled} type="submit">{buttonText}</PublishButton>
                         </form>
 
                     </div>
@@ -162,7 +202,7 @@ const PublishingContainer = styled.div`
         margin-bottom: 15px;
         margin-top:5px;
     }
-    input {
+    input, textarea {
         width: 503px;
         height: 30px;
         background-color: #EFEFEF;
@@ -170,6 +210,7 @@ const PublishingContainer = styled.div`
         border-radius: 5px;
         margin-bottom: 5px;
         &::placeholder{
+            font-family: 'Lato';
             color:#949494;
             font-size:15px;
             line-height:18px;
@@ -178,6 +219,7 @@ const PublishingContainer = styled.div`
     }
     .captionInput {
         height: 66px;
+        vertical-align: top;
     }
     form{
     display: flex;
@@ -196,6 +238,7 @@ const PublishButton = styled.button`
         font-weight: 700;
         font-size: 14px;
         line-height: 19px;
+        cursor:pointer;
 `
 
 const TimelineContainer = styled.div`

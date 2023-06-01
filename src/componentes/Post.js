@@ -6,8 +6,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         window.open(link);
     }
 
-    console.log(linkImage)
-
     return (
         <PostContainer data-test="post">
             <ProfilePicture src={picture} alt="profile-picture" />
