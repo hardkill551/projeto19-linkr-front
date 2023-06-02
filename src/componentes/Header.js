@@ -8,6 +8,8 @@ import { UserContext } from "../ContextAPI/ContextUser";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
+import api from "../axios";
+const token = localStorage.getItem("token");
 
 export default function Header() {
   const [findActive, setFindActive] = useState(false);
@@ -15,10 +17,26 @@ export default function Header() {
   const { logoutBox, setLogoutBox } = useContext(LogoutContext)
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useContext(UserContext);
+  const [users, setUsers] = useState([])
 
   function SearchUsers(e) {
-    setFindActive(true);
-    setSearch(e.target.value);
+    setFindActive(true)
+    setSearch(e.target.value)
+    if (e.target.value.length > 0) {
+      const request = api.get("/users/" + e.target.value,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      request.then(response => { setUsers(response.data) });
+      request.catch(err => console.log(err))
+    } else {
+      setFindActive(false)
+    }
+  }
+  function goToUserPage(id) {
+    setSearch("")
+    setFindActive(false)
+    navigate("/user/" + id)
   }
   return (
     <>
@@ -26,6 +44,7 @@ export default function Header() {
         <Logo>linkr</Logo>
         <InputContainer onClick={() => setLogoutBox(false)} >
           <StyledInput
+            data-test="search"
             placeholder="Search for people"
             value={search}
             minLength={3}
@@ -35,27 +54,12 @@ export default function Header() {
           <Icon />
         </InputContainer>
         <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
-          <User>
-            <img
-              src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-              alt="user-picture"
-            />
-            <p>name</p>
-          </User>
-          <User>
-            <img
-              src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-              alt="user-picture"
-            />
-            <p>name</p>
-          </User>
-          <User>
-            <img
-              src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-              alt="user-picture"
-            />
-            <p>name</p>
-          </User>
+          {users.map((user) => (
+            <User data-test="user-search" onClick={() => goToUserPage(user.id)} key={user.id}>
+              <img src={user.picture} alt="user-picture" />
+              <p>{user.name}</p>
+            </User>
+          ))}
         </FindUsers>
         <MyContent onClick={() => setLogoutBox(!logoutBox)}>
           {logoutBox ? (
@@ -82,9 +86,9 @@ export default function Header() {
           />
         </MyContent>
 
-      
-    </HeaderContainer>
-    {logoutBox && (
+
+      </HeaderContainer>
+      {logoutBox && (
         <Centralizer data-test="menu">
           <motion.div
             animate={{ y: 0 }}
@@ -127,6 +131,9 @@ const Logout = styled.button`
   font-size: 17px;
   font-family: "Lato", sans-serif;
   font-weight: 700;
+  p{
+    cursor: pointer;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -173,7 +180,7 @@ const FindUsers = styled.ul`
   border-radius: 8px;
   background-color: #e7e7e7;
   margin-top: 60px;
-  position: fixed;
+  position: absolute;
   left: 50%;
   top: -46px;
   transform: translateX(-50%);
@@ -192,6 +199,7 @@ const User = styled.div`
   color: #515151;
   margin-top: 15px;
   align-items: center;
+  cursor: pointer;
   img {
     width: 39px;
     height: 39px;
@@ -228,6 +236,7 @@ const Menu = styled(FaGreaterThan)`
   transform: rotate(90deg);
   height: 22px;
   width: 20px;
+  cursor: pointer
 `;
 
 const ProfilePicture = styled.img`

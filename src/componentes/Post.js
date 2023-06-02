@@ -1,11 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription }) {
-
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id }) {
+    const navigate = useNavigate();
     function redirectToUrl(link) {
         window.open(link);
     }
+
+    function goToUserPage(id){
+        navigate("/user/"+id)
+    }
+
 
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
@@ -33,11 +39,12 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         return message;
     }
 
+
     return (
         <PostContainer data-test="post">
             <ProfilePicture src={picture} alt="profile-picture" />
             <div>
-                <h2 data-test="username">{name}</h2>
+                <h2 data-test="username" onClick={()=>goToUserPage(id)}>{name}</h2>
                 <h3 data-test="description">{renderMessageWithHashtags()}</h3>
                 <LinkContainer onClick={() => redirectToUrl(link)}>
                     <div>
@@ -117,6 +124,7 @@ const PostContainer = styled.div`
         line-height: 23px;
         color: #FFFFFF;
         margin-bottom: 7px;
+        cursor: pointer;
     }
     h3 {
         font-family: 'Lato';
