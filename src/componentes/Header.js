@@ -34,6 +34,9 @@ export default function Header() {
             setFindActive(false)
         }
     }
+    function goToUserPage(id){
+        navigate("/user/"+id)
+    }
     
     return (
         <>
@@ -79,7 +82,13 @@ export default function Header() {
             </Centralizer>
           )}
           </>
-    )
+    );
+
+    function logout() {
+      localStorage.clear();
+      setUserInfo({ ...userInfo, name: "", email: "", picture: "", token: "" });
+      navigate("/");
+    }
 }
 
 const Centralizer = styled.div`
