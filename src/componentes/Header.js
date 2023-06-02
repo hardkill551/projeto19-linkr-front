@@ -11,110 +11,104 @@ import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
 
 export default function Header() {
-    const [findActive, setFindActive] = useState(false)
-    const [search, setSearch] = useState("")
-    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
-    const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const [users, setUsers]= useState([])
-    const { userInfo, setUserInfo } = useContext(UserContext);
-    console.log(users)
-    console.log(search)
+  const [findActive, setFindActive] = useState(false);
+  const [search, setSearch] = useState("");
+  const { logoutBox, setLogoutBox } = useContext(LogoutContext)
+  const navigate = useNavigate();
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const [users, setUsers] = useState([])
 
-    function SearchUsers(e){
-        setFindActive(true)
-        setSearch(e.target.value)
-        if(e.target.value.length > 0){
-            const request = api.get("/users/" + e.target.value,
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
+  function SearchUsers(e) {
+    setFindActive(true)
+    setSearch(e.target.value)
+    if (e.target.value.length > 0) {
+      const request = api.get("/users/" + e.target.value,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
 
-            request.then(response => { setUsers(response.data) });
-            request.catch(err => console.log(err))
-        }else{
-            setFindActive(false)
-        }
+      request.then(response => { setUsers(response.data) });
+      request.catch(err => console.log(err))
+    } else {
+      setFindActive(false)
     }
-    function goToUserPage(id){
-        setSearch("")
-        setFindActive(false)
-        navigate("/user/"+id)
-    }
-    
-    return (
-        <>
-        <HeaderContainer>
-            <Logo>
-                linkr
-            </Logo>
-            <InputContainer onClick={() => setLogoutBox(false)}>
-                <StyledInput
-                    data-test="search"
-                    placeholder="Search for people"
-                    value={search}
-                    minLength={3}
-                    debounceTimeout={300}
-                    onChange={SearchUsers}
-                    />
-                <Icon/>
-            </InputContainer>
-            <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
-                {users.map((user) => (
-                    <User data-test="user-search" onClick={()=>goToUserPage(user.id)} key={user.id}>
-                        <img src={user.picture} alt="user-picture" />
-                        <p>{user.name}</p>
-                    </User>
-                ))}
-            </FindUsers>
-            <MyContent onClick={() => setLogoutBox(!logoutBox)}>
-        {logoutBox ? (
-          <motion.section
-            animate={{ rotateZ: 0 }}
-            onClick={() => setLogoutBox(!logoutBox)}
-            transition={{ duration: 0.5 }}
-          >
-            <Menu />
-          </motion.section>
-        ) : (
-          <motion.section
-            initial={{ rotateZ: 180 }}
-            onClick={() => setLogoutBox(!logoutBox)}
-            transition={{ duration: 0.3 }}
-          >
-            <Menu />
-          </motion.section>
-        )}
+  }
+  function goToUserPage(id) {
+    setSearch("")
+    setFindActive(false)
+    navigate("/user/" + id)
+  }
+  return (
+    <>
+      <HeaderContainer>
+        <Logo>linkr</Logo>
+        <InputContainer onClick={() => setLogoutBox(false)} >
+          <StyledInput
+            data-test="search"
+            placeholder="Search for people"
+            value={search}
+            minLength={3}
+            debounceTimeout={300}
+            onChange={SearchUsers}
+          />
+          <Icon />
+        </InputContainer>
+        <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
+          {users.map((user) => (
+            <User data-test="user-search" onClick={() => goToUserPage(user.id)} key={user.id}>
+              <img src={user.picture} alt="user-picture" />
+              <p>{user.name}</p>
+            </User>
+          ))}
+        </FindUsers>
+        <MyContent onClick={() => setLogoutBox(!logoutBox)}>
+          {logoutBox ? (
+            <motion.section
+              animate={{ rotateZ: 0 }}
+              onClick={() => setLogoutBox(!logoutBox)}
+              transition={{ duration: 0.5 }}
+            >
+              <Menu />
+            </motion.section>
+          ) : (
+            <motion.section
+              initial={{ rotateZ: 180 }}
+              onClick={() => setLogoutBox(!logoutBox)}
+              transition={{ duration: 0.3 }}
+            >
+              <Menu />
+            </motion.section>
+          )}
 
-        <ProfilePicture
-          src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-          alt="profile-picture"
-        />
-      </MyContent>
+          <ProfilePicture
+            src={userInfo.picture}
+            alt="profile-picture"
+          />
+        </MyContent>
 
-      
-    </HeaderContainer>
-    {logoutBox && (
-        <Centralizer>
+
+      </HeaderContainer>
+      {logoutBox && (
+        <Centralizer data-test="menu">
           <motion.div
             animate={{ y: 0 }}
             initial={{ y: -60 }}
             exit={{ y: -60 }}
             transition={{ duration: 0.5, type: "tween" }}
           >
-            <Logout onClick={() => logout()}>
+            <Logout data-test="logout" onClick={() => logout()}>
               <p>Logout</p>
             </Logout>
           </motion.div>
         </Centralizer>
       )}
-      </>
+    </>
   );
 
-    function logout() {
-      localStorage.clear();
-      setUserInfo({ ...userInfo, name: "", email: "", picture: "", token: "" });
-      navigate("/");
-    }
+  function logout() {
+    localStorage.clear();
+    setUserInfo({ ...userInfo, name: "", email: "", picture: "", token: "" });
+    navigate("/");
+  }
 }
 
 const Centralizer = styled.div`
@@ -122,9 +116,10 @@ const Centralizer = styled.div`
   right: 0px;
   top: 72px;
 `;
-const Logout = styled.div`
+const Logout = styled.button`
   font-size: 20px;
   color: white;
+  border:0px;
   background-color: #171717;
   width: 150px;
   height: 47px;

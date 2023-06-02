@@ -37,9 +37,9 @@ export default function Login(){
             <Right>
                 <form onSubmit={login}>
                     {loginInput.map((object) => <input disabled={disable} onChange={(e)=>{object === "e-mail"?setUser({...user, email:e.target.value}):setUser({...user, password:e.target.value})}
-                    } type={object === "e-mail"?"email":"password"} placeholder={object}/>)}
-                    <button disabled={disable} type="submit">Log In</button>
-                    <button disabled={disable} type="button" onClick={()=>navigate("/sign-up")}>First time? Create an account!</button>
+                    } type={object === "e-mail"?"email":"password"} data-test={object === "e-mail"?"email":"password"} placeholder={object}/>)}
+                    <button disabled={disable} data-test="login-btn" type="submit">Log In</button>
+                    <button disabled={disable} data-test="sign-up-link" type="button" onClick={()=>navigate("/sign-up")}>First time? Create an account!</button>
                 </form>
             </Right>
         </Background>
