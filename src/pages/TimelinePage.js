@@ -22,7 +22,7 @@ export default function TimelinePage() {
     const [reloadPage, setReloadPage] = useState(false);
     const { userInfo, setUserInfo } = useContext(UserContext)
     const { logoutBox, setLogoutBox } = useContext(LogoutContext)
-    console.log(posts)
+
     useEffect(() => {
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
