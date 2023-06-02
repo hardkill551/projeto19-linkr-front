@@ -49,6 +49,7 @@ export default function Header() {
             </Logo>
             <InputContainer onClick={() => setLogoutBox(false)}>
                 <StyledInput
+                    data-test="search"
                     placeholder="Search for people"
                     value={search}
                     minLength={3}
@@ -59,7 +60,7 @@ export default function Header() {
             </InputContainer>
             <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
                 {users.map((user) => (
-                    <User onClick={()=>goToUserPage(user.id)} key={user.id}>
+                    <User data-test="user-search" onClick={()=>goToUserPage(user.id)} key={user.id}>
                         <img src={user.picture} alt="user-picture" />
                         <p>{user.name}</p>
                     </User>
