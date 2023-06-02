@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Header from "../componentes/Header";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -6,18 +6,33 @@ import api from "../axios";
 import Post from "../componentes/Post";
 import { ThreeDots } from 'react-loader-spinner'
 import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
+import axios from "axios";
+import { UserContext } from "../ContextAPI/ContextUser";
+import { LogoutContext } from "../ContextAPI/ContextLogout";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
     const [error, setError] = useState(false);
+    const {userInfo, setUserInfo} = useContext(UserContext)
+    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
 
-    useEffect(() => {
-
-        // if (!token) {
-        //     navigate("/");
-        //   } else {
+    useEffect(()=>{
+        if(token){
+            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res=>{
+                setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
+            }).catch(err=>{
+                localStorage.clear();
+                navigate("/")
+            })
+        }
+        else{
+            navigate("/")
+        }
 
         const request = api.get("/posts",
             { headers: { Authorization: `Bearer ${token}` } }
@@ -27,15 +42,14 @@ export default function TimelinePage() {
         request.catch(err => {
             setError(true);
         });
+    },[])
 
-        //   }
-    }, []);
 
     if (error) {
         return (
             <>
                 <Header />
-                <TimelineContainer>
+                <TimelineContainer onClick={() => setLogoutBox(false)}>
                     <ErrorContainer>
                         <h1>An error occurred while trying to fetch the posts, please refresh the page.</h1>
                     </ErrorContainer>
@@ -47,7 +61,7 @@ export default function TimelinePage() {
     if (posts === null) {
         return (
             <><Header />
-                <TimelineContainer>
+                <TimelineContainer onClick={() => setLogoutBox(false)}>
                     <ContentContainer>
                         <h1>timeline</h1>
                         <PublishingContainer data-test="publish-box">
@@ -84,7 +98,7 @@ export default function TimelinePage() {
         <TimelineContainer>
             <Header />
 
-            <ContentContainer>
+            <ContentContainer onClick={() => setLogoutBox(false)}>
                 <h1>timeline</h1>
                 <PublishingContainer>
                     <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
