@@ -184,7 +184,7 @@ const FindUsers = styled.ul`
   border-radius: 8px;
   background-color: #e7e7e7;
   margin-top: 60px;
-  position: fixed;
+  position: absolute;
   left: 50%;
   top: -46px;
   transform: translateX(-50%);
