@@ -11,8 +11,7 @@ import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 
 export default function TimelinePage() {
-    // const token = localStorage.getItem("token");
-    const token = "1234";
+    const token = localStorage.getItem("token");
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
     const [error, setError] = useState(false);
