@@ -23,10 +23,11 @@ export default function UserPage() {
 
   
     }, []);
-
+    console.log(posts)
     if (posts === null) {
         return <>Carregando</>
     }
+
     return (
         <><Header />
             <TimelineContainer>
@@ -35,11 +36,11 @@ export default function UserPage() {
                         <ProfilePicture src={posts[0].picture} alt="profile-picture" />
                         <h1>{posts[0].name}'s posts</h1>
                     </ProfileContainer>
-                
+                    {posts.length===0?<p>Este usuario ainda não possui posts</p>:
                     <Posts posts={posts}>
                         {posts.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id}/>)}
                         <p data-test="message">There are no posts yet</p>
-                    </Posts>
+                    </Posts>}
                 </ContentContainer>
             </TimelineContainer></>
     )

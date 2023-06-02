@@ -3,14 +3,34 @@ import { FaGreaterThan } from 'react-icons/fa';
 import { useState } from "react";
 import { BiSearch } from "react-icons/bi" 
 import { DebounceInput } from "react-debounce-input";
+import api from "../axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
     const [findActive, setFindActive] = useState(false)
     const [search, setSearch] = useState("")
-    console.log(search)
+    const token = localStorage.getItem("token");
+    const [users, setUsers]= useState([])
+    const navigate = useNavigate();
+    console.log(users)
+
+    function goToUserPage(id){
+        navigate("/user/"+id)
+    }
     function SearchUsers(e){
         setFindActive(true)
         setSearch(e.target.value)
+    
+        if(e.target.value.length > 0){
+            const request = api.get("/users/" + e.target.value,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+
+            request.then(response => { setUsers(response.data) });
+            request.catch(err => console.log(err))
+        }else{
+            setFindActive(false)
+        }
     }
     return (
         <HeaderContainer>
@@ -28,18 +48,12 @@ export default function Header() {
                 <Icon/>
             </InputContainer>
             <FindUsers findActive={findActive}>
-                <User>
-                    <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
-                    <p>name</p>
+            {users.map((user) => (
+                <User onClick={()=>goToUserPage(user.id)} key={user.id}>
+                    <img src={user.picture} alt="user-picture" />
+                    <p>{user.name}</p>
                 </User>
-                <User>
-                    <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
-                    <p>name</p>
-                </User>
-                <User>
-                    <img src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="user-picture"/>
-                    <p>name</p>
-                </User>
+            ))}
             </FindUsers>
             <MyContent>
                 <Menu />
