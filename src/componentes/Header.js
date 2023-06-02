@@ -20,6 +20,7 @@ export default function Header() {
     const { userInfo, setUserInfo } = useContext(UserContext);
     console.log(users)
     console.log(search)
+
     function SearchUsers(e){
         setFindActive(true)
         setSearch(e.target.value)
@@ -35,6 +36,8 @@ export default function Header() {
         }
     }
     function goToUserPage(id){
+        setSearch("")
+        setFindActive(false)
         navigate("/user/"+id)
     }
     
@@ -62,27 +65,49 @@ export default function Header() {
                     </User>
                 ))}
             </FindUsers>
-            <MyContent>
-                <Menu />
-                <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
-            </MyContent>
-        </HeaderContainer>
-        {logoutBox && (
-            <Centralizer>
-              <motion.div
-                animate={{ y: 0 }}
-                initial={{ y: -60 }}
-                exit={{ y: -60 }}
-                transition={{ duration: 0.5, type: "tween" }}
-              >
-                <Logout onClick={() => logout()}>
-                  <p>Logout</p>
-                </Logout>
-              </motion.div>
-            </Centralizer>
-          )}
-          </>
-    );
+            <MyContent onClick={() => setLogoutBox(!logoutBox)}>
+        {logoutBox ? (
+          <motion.section
+            animate={{ rotateZ: 0 }}
+            onClick={() => setLogoutBox(!logoutBox)}
+            transition={{ duration: 0.5 }}
+          >
+            <Menu />
+          </motion.section>
+        ) : (
+          <motion.section
+            initial={{ rotateZ: 180 }}
+            onClick={() => setLogoutBox(!logoutBox)}
+            transition={{ duration: 0.3 }}
+          >
+            <Menu />
+          </motion.section>
+        )}
+
+        <ProfilePicture
+          src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
+          alt="profile-picture"
+        />
+      </MyContent>
+
+      
+    </HeaderContainer>
+    {logoutBox && (
+        <Centralizer>
+          <motion.div
+            animate={{ y: 0 }}
+            initial={{ y: -60 }}
+            exit={{ y: -60 }}
+            transition={{ duration: 0.5, type: "tween" }}
+          >
+            <Logout onClick={() => logout()}>
+              <p>Logout</p>
+            </Logout>
+          </motion.div>
+        </Centralizer>
+      )}
+      </>
+  );
 
     function logout() {
       localStorage.clear();
@@ -109,6 +134,9 @@ const Logout = styled.div`
   font-size: 17px;
   font-family: "Lato", sans-serif;
   font-weight: 700;
+  p{
+    cursor: pointer;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -210,6 +238,7 @@ const Menu = styled(FaGreaterThan)`
   transform: rotate(90deg);
   height: 22px;
   width: 20px;
+  cursor: pointer
 `;
 
 const ProfilePicture = styled.img`

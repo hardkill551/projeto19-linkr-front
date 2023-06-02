@@ -43,3 +43,21 @@ export const Posts = styled.div`
         color: #ffffff;
     }
 `
+
+export const Loading = styled.div`
+width: 611px;
+height: 100vh;
+display:flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: center;
+h2 {
+    font-family: 'Oswald';
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 36px;
+    color: #ffffff;
+    margin-bottom: 5px;
+    margin-top:5px;
+}
+`

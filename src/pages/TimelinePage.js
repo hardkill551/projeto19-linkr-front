@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../axios";
 import Post from "../componentes/Post";
 import { ThreeDots } from 'react-loader-spinner'
-import { ContentContainer, Posts, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
+import { ContentContainer, Loading, Posts, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
 import axios from "axios";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
@@ -121,24 +121,6 @@ export default function TimelinePage() {
         </TimelineContainer>
     )
 }
-
-const Loading = styled.div`
-    width: 611px;
-    height: 100vh;
-    display:flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    h2 {
-        font-family: 'Oswald';
-        font-weight: 400;
-        font-size: 24px;
-        line-height: 36px;
-        color: #ffffff;
-        margin-bottom: 5px;
-        margin-top:5px;
-    }
-`
 
 const PublishingContainer = styled.div`
     width: 611px;
