@@ -12,7 +12,7 @@ import { LogoutContext } from "../ContextAPI/ContextLogout";
 export default function Header() {
   const [findActive, setFindActive] = useState(false);
   const [search, setSearch] = useState("");
-  const {logoutBox, setLogoutBox} = useContext(LogoutContext)
+  const { logoutBox, setLogoutBox } = useContext(LogoutContext)
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useContext(UserContext);
 
@@ -22,69 +22,69 @@ export default function Header() {
   }
   return (
     <>
-    <HeaderContainer>
-      <Logo>linkr</Logo>
-      <InputContainer onClick={() => setLogoutBox(false)} >
-        <StyledInput
-          placeholder="Search for people"
-          value={search}
-          minLength={3}
-          debounceTimeout={300}
-          onChange={SearchUsers}
-        />
-        <Icon />
-      </InputContainer>
-      <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
-        <User>
-          <img
-            src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-            alt="user-picture"
+      <HeaderContainer>
+        <Logo>linkr</Logo>
+        <InputContainer onClick={() => setLogoutBox(false)} >
+          <StyledInput
+            placeholder="Search for people"
+            value={search}
+            minLength={3}
+            debounceTimeout={300}
+            onChange={SearchUsers}
           />
-          <p>name</p>
-        </User>
-        <User>
-          <img
-            src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-            alt="user-picture"
-          />
-          <p>name</p>
-        </User>
-        <User>
-          <img
-            src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-            alt="user-picture"
-          />
-          <p>name</p>
-        </User>
-      </FindUsers>
-      <MyContent onClick={() => setLogoutBox(!logoutBox)}>
-        {logoutBox ? (
-          <motion.section
-            animate={{ rotateZ: 0 }}
-            onClick={() => setLogoutBox(!logoutBox)}
-            transition={{ duration: 0.5 }}
-          >
-            <Menu />
-          </motion.section>
-        ) : (
-          <motion.section
-            initial={{ rotateZ: 180 }}
-            onClick={() => setLogoutBox(!logoutBox)}
-            transition={{ duration: 0.3 }}
-          >
-            <Menu />
-          </motion.section>
-        )}
+          <Icon />
+        </InputContainer>
+        <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
+          <User>
+            <img
+              src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
+              alt="user-picture"
+            />
+            <p>name</p>
+          </User>
+          <User>
+            <img
+              src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
+              alt="user-picture"
+            />
+            <p>name</p>
+          </User>
+          <User>
+            <img
+              src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
+              alt="user-picture"
+            />
+            <p>name</p>
+          </User>
+        </FindUsers>
+        <MyContent onClick={() => setLogoutBox(!logoutBox)}>
+          {logoutBox ? (
+            <motion.section
+              animate={{ rotateZ: 0 }}
+              onClick={() => setLogoutBox(!logoutBox)}
+              transition={{ duration: 0.5 }}
+            >
+              <Menu />
+            </motion.section>
+          ) : (
+            <motion.section
+              initial={{ rotateZ: 180 }}
+              onClick={() => setLogoutBox(!logoutBox)}
+              transition={{ duration: 0.3 }}
+            >
+              <Menu />
+            </motion.section>
+          )}
 
-        <ProfilePicture
-          src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
-          alt="profile-picture"
-        />
-      </MyContent>
+          <ProfilePicture
+            src={userInfo.picture}
+            alt="profile-picture"
+          />
+        </MyContent>
 
-      
-    </HeaderContainer>
-    {logoutBox && (
+
+      </HeaderContainer>
+      {logoutBox && (
         <Centralizer>
           <motion.div
             animate={{ y: 0 }}
@@ -98,7 +98,7 @@ export default function Header() {
           </motion.div>
         </Centralizer>
       )}
-      </>
+    </>
   );
 
   function logout() {

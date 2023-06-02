@@ -3,7 +3,7 @@ import styled from "styled-components"
 export const TimelineContainer = styled.div`
     background-color: #4D4D4D;
     width: 100%;
-    min-height: calc(100vh - 72px);
+    min-height: 100vh;
     
     h1{
         font-family: 'Oswald';
