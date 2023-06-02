@@ -89,7 +89,7 @@ export default function TimelinePage() {
         });
 
         request.catch(err => {
-            alert("There was an error publishing your link.");
+            alert("There was an error publishing your link");
             setDisabled(false);
             setButtonText("Publishing");
         })
