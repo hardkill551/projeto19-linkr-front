@@ -5,6 +5,7 @@ import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
 
 function App() {
+  
   return (
     <BrowserRouter>
       <Routes>

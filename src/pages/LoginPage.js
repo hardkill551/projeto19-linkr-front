@@ -17,7 +17,6 @@ export default function Login(){
                     Authorization: `Bearer ${token}`
                 }
             }).then(res=>{
-                console.log(res)
                 navigate("/timeline")
                 
             }).catch(err=>{
@@ -56,7 +55,7 @@ export default function Login(){
         }
         
         axios.post(process.env.REACT_APP_API_URL+"/signin", user).then((res)=>{
-            setUserInfo({...userInfo, user:"", email:"", picture:"", token:""})
+            setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
             localStorage.setItem("token", res.data.token)
             setDisable(false)
             navigate("/timeline")

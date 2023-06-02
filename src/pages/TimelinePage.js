@@ -8,6 +8,7 @@ import { ThreeDots } from 'react-loader-spinner'
 import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
 import axios from "axios";
 import { UserContext } from "../ContextAPI/ContextUser";
+import { LogoutContext } from "../ContextAPI/ContextLogout";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
@@ -15,6 +16,7 @@ export default function TimelinePage() {
     const navigate = useNavigate();
     const [error, setError] = useState(false);
     const {userInfo, setUserInfo} = useContext(UserContext)
+    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
 
     useEffect(()=>{
         if(token){
@@ -24,7 +26,8 @@ export default function TimelinePage() {
             }).then(res=>{
                 setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
             }).catch(err=>{
-                alert(err.response.data)
+                localStorage.clear();
+                navigate("/")
             })
         }
         else{
@@ -46,7 +49,7 @@ export default function TimelinePage() {
         return (
             <>
                 <Header />
-                <TimelineContainer>
+                <TimelineContainer onClick={() => setLogoutBox(false)}>
                     <ErrorContainer>
                         <h1>An error occurred while trying to fetch the posts, please refresh the page.</h1>
                     </ErrorContainer>
@@ -58,7 +61,7 @@ export default function TimelinePage() {
     if (posts === null) {
         return (
             <><Header />
-                <TimelineContainer>
+                <TimelineContainer onClick={() => setLogoutBox(false)}>
                     <ContentContainer>
                         <h1>timeline</h1>
                         <PublishingContainer data-test="publish-box">
@@ -95,7 +98,7 @@ export default function TimelinePage() {
         <TimelineContainer>
             <Header />
 
-            <ContentContainer>
+            <ContentContainer onClick={() => setLogoutBox(false)}>
                 <h1>timeline</h1>
                 <PublishingContainer>
                     <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />

@@ -6,12 +6,14 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ContextAPI/ContextUser";
+import { LogoutContext } from "../ContextAPI/ContextLogout";
 
 export default function UserPage() {
     const [posts, setPosts] = useState(null);
     const token = localStorage.getItem("token");
     const navigate = useNavigate()
     const {userInfo, setUserInfo} = useContext(UserContext)
+    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
 
         useEffect(()=>{
         if(token){
@@ -21,7 +23,8 @@ export default function UserPage() {
             }).then(res=>{
                 setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
             }).catch(err=>{
-                alert(err.response.data)
+                localStorage.clear();
+                navigate("/")
             })
         }
         else{
@@ -29,7 +32,7 @@ export default function UserPage() {
         }},[])
     return (
         <><Header />
-            <TimelineContainer>
+            <TimelineContainer onClick={() => setLogoutBox(false)}>
                 <ContentContainer>
                     <ProfileContainer>
                         <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
