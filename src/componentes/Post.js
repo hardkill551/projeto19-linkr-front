@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription }) {
 
@@ -6,17 +7,41 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         window.open(link);
     }
 
+    function renderMessageWithHashtags() {
+        const hashtagRegex = /#(\w+)/g;
+        const hashtags = message.match(hashtagRegex);
+
+        console.log(hashtags)
+
+        if (hashtags) {
+            const messageParts = message.split(hashtagRegex);
+
+            return messageParts.map((part, index) => {
+                if (hashtags.includes(`#${part}`)) {
+                    const hashtag = part.replace("#", "");
+                    return (
+                        <HashtagLink key={index} to={`/hashtag/${hashtag}`}>
+                            <strong>{`#${part}`}</strong>
+                        </HashtagLink>
+                    );
+                }
+
+                return part;
+            });
+        }
+
+        return message;
+    }
+
     return (
         <PostContainer data-test="post">
             <ProfilePicture src={picture} alt="profile-picture" />
             <div>
-                <h2>{name}</h2>
-                <h3>{message}</h3>
-                <LinkContainer onClick={() => redirectToUrl(link)}>
+                <h2 data-test="username">{name}</h2>
+                <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                <LinkContainer data-test="link" onClick={() => redirectToUrl(link)}>
                     <div>
-                        <h4>
-                            {linkTitle}
-                        </h4>
+                        <h4>{linkTitle}</h4>
                         <p>{linkDescription}</p>
                         <a href={link}>{link}</a>
                     </div>
@@ -24,8 +49,15 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                 </LinkContainer>
             </div>
         </PostContainer>
-    )
+    );
+
 }
+
+const HashtagLink = styled(Link)`
+    color: #CECECE;
+    font-weight: bold;
+    text-decoration: none;
+`;
 
 const LinkContainer = styled.div`
     width:503px;

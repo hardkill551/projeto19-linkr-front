@@ -71,7 +71,6 @@ export default function TimelinePage() {
             setButtonText("Publishing");
             setLink("");
             setMessage("");
-            setPosts(null);
             setReloadPage(true);
         });
 
@@ -125,7 +124,7 @@ export default function TimelinePage() {
 
             <ContentContainer>
                 <h1>timeline</h1>
-                <PublishingContainer>
+                <PublishingContainer data-test="publish-box">
                     <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
                     <div>
                         <h2>What are you going to share today?</h2>
