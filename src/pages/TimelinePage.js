@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Header from "../componentes/Header";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -6,18 +6,30 @@ import api from "../axios";
 import Post from "../componentes/Post";
 import { ThreeDots } from 'react-loader-spinner'
 import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
+import axios from "axios";
+import { UserContext } from "../ContextAPI/ContextUser";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
     const [error, setError] = useState(false);
+    const {userInfo, setUserInfo} = useContext(UserContext)
 
-    useEffect(() => {
-
-        // if (!token) {
-        //     navigate("/");
-        //   } else {
+    useEffect(()=>{
+        if(token){
+            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res=>{
+                setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
+            }).catch(err=>{
+                alert(err.response.data)
+            })
+        }
+        else{
+            navigate("/")
+        }
 
         const request = api.get("/posts",
             { headers: { Authorization: `Bearer ${token}` } }
@@ -27,9 +39,8 @@ export default function TimelinePage() {
         request.catch(err => {
             setError(true);
         });
+    },[])
 
-        //   }
-    }, []);
 
     if (error) {
         return (

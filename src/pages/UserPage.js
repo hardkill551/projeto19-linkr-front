@@ -2,12 +2,31 @@ import Header from "../componentes/Header";
 import styled from "styled-components";
 import Post from "../componentes/Post";
 import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../ContextAPI/ContextUser";
 
 export default function UserPage() {
     const [posts, setPosts] = useState(null);
-  
+    const token = localStorage.getItem("token");
+    const navigate = useNavigate()
+    const {userInfo, setUserInfo} = useContext(UserContext)
 
+        useEffect(()=>{
+        if(token){
+            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res=>{
+                setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
+            }).catch(err=>{
+                alert(err.response.data)
+            })
+        }
+        else{
+            navigate("/")
+        }},[])
     return (
         <><Header />
             <TimelineContainer>

@@ -1,13 +1,27 @@
 import { useNavigate } from "react-router-dom";
 import { signUpInput, signUpInputType } from "../constants/inputs";
 import { Background, Left, Right } from "../style/LoginStyle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function SignUp(){
     const navigate = useNavigate()
     const [user, setUser] = useState({email:"", password:"", name: "", picture:""})
     const [disable, setDisable] = useState(false)
+    const token = localStorage.getItem("token")
+    useEffect(()=>{
+        if(token){
+            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res=>{
+                navigate("/timeline")
+                
+            }).catch(err=>{
+                alert(err.response.data)
+            })
+        }
+    }, [])
     return (
         <Background>
             <Left>

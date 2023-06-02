@@ -1,13 +1,34 @@
 import { loginInput } from "../constants/inputs";
 import { useNavigate } from "react-router-dom";
 import { Background, Left, Right } from "../style/LoginStyle";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { UserContext } from "../ContextAPI/ContextUser";
 
 export default function Login(){
     const navigate = useNavigate()
     const [user, setUser] = useState({email:"", password:""})
     const [disable, setDisable] = useState(false)
+    const token = localStorage.getItem("token")
+    const {userInfo, setUserInfo} = useContext(UserContext)
+    useEffect(()=>{
+        if(token){
+            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res=>{
+                console.log(res)
+                navigate("/timeline")
+                
+            }).catch(err=>{
+                alert(err.response.data)
+            })
+        }
+    }, [])
+
+
+
+
     return (
         <Background>
             <Left>
@@ -35,6 +56,8 @@ export default function Login(){
         }
         
         axios.post(process.env.REACT_APP_API_URL+"/signin", user).then((res)=>{
+            setUserInfo({...userInfo, user:"", email:"", picture:"", token:""})
+            localStorage.setItem("token", res.data.token)
             setDisable(false)
             navigate("/timeline")
         }).catch((err)=>{
