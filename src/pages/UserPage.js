@@ -2,15 +2,37 @@ import Header from "../componentes/Header";
 import styled from "styled-components";
 import Post from "../componentes/Post";
 import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../ContextAPI/ContextUser";
+import { LogoutContext } from "../ContextAPI/ContextLogout";
 
 export default function UserPage() {
     const [posts, setPosts] = useState(null);
-  
+    const token = localStorage.getItem("token");
+    const navigate = useNavigate()
+    const {userInfo, setUserInfo} = useContext(UserContext)
+    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
 
+        useEffect(()=>{
+        if(token){
+            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res=>{
+                setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
+            }).catch(err=>{
+                localStorage.clear();
+                navigate("/")
+            })
+        }
+        else{
+            navigate("/")
+        }},[])
     return (
         <><Header />
-            <TimelineContainer>
+            <TimelineContainer onClick={() => setLogoutBox(false)}>
                 <ContentContainer>
                     <ProfileContainer>
                         <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
