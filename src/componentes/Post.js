@@ -1,9 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../ContextAPI/ContextUser";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id }) {
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId }) {
     const navigate = useNavigate();
+    const {userInfo} = useContext(UserContext)
+    const [likeOn, setLikeOn] = useState(false)
+    const [count, setCount] = useState(Number(like_count))
+    useEffect(()=>{
+        axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        } ).then(res=>{
+            if(res.data) setLikeOn(true)
+            
+        }).catch(err=>{
+            console.log(err.response.data)
+        })
+    },[])
     function redirectToUrl(link) {
         window.open(link);
     }
@@ -16,8 +35,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
         const hashtags = message.match(hashtagRegex);
-
-        console.log(hashtags)
 
         if (hashtags) {
             const messageParts = message.split(hashtagRegex);
@@ -42,7 +59,11 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
     return (
         <PostContainer data-test="post">
-            <ProfilePicture src={picture} alt="profile-picture" />
+            <Likes like={likeOn}>
+                <ProfilePicture src={picture} alt="profile-picture" />
+                {likeOn?<AiFillHeart data-test="like-btn" onClick={()=>deslike()}/>:<AiOutlineHeart data-test="like-btn" onClick={()=>giveLike()}/>}
+                <h5 data-test="counter">{Number(count)} likes</h5>
+            </Likes>
             <div>
                 <h2 data-test="username" onClick={()=>goToUserPage(id)}>{name}</h2>
                 <h3 data-test="description">{renderMessageWithHashtags()}</h3>
@@ -58,6 +79,34 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         </PostContainer>
     );
 
+    function deslike(){
+        axios.delete(process.env.REACT_APP_API_URL+"/likes", {
+            headers: {
+              Authorization: userInfo.token
+            },
+            data: {
+              postId
+            }
+          } ).then(res=>{
+            setLikeOn(false)
+            setCount(Number(count-1))
+        }).catch(err=>{
+            console.log(err.response.data)
+        })
+    }
+    function giveLike(){
+        axios.post(process.env.REACT_APP_API_URL+"/likes", {postId}, {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        } ).then(res=>{
+            setLikeOn(true)
+            setCount(Number(count+1))
+        }).catch(err=>{
+            console.log(err.response.data)
+        })
+    }
+
 }
 
 const HashtagLink = styled(Link)`
@@ -65,7 +114,25 @@ const HashtagLink = styled(Link)`
     font-weight: bold;
     text-decoration: none;
 `;
+const Likes = styled.div`
+display:flex;
+flex-direction:column;
+align-items:center;
+color:white;
+svg{
+    font-size:30px;
+    margin-top:15px;
+    margin-bottom:5px;
+    color:${(props) => props.like ? "#AC0000" : "white"}
+}
+h5{
+    color:white;
+    font-size:14px;
 
+    font-family: 'Lato';
+}
+
+`
 const LinkContainer = styled.div`
     width:503px;
     height: 155px;

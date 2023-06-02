@@ -83,6 +83,7 @@ export default function Header() {
           <ProfilePicture
             src={userInfo.picture}
             alt="profile-picture"
+            data-test="avatar"
           />
         </MyContent>
 
@@ -116,10 +117,12 @@ const Centralizer = styled.div`
   position: absolute;
   right: 0px;
   top: 72px;
+  
 `;
 const Logout = styled.button`
   font-size: 20px;
   color: white;
+  cursor:pointer;
   border:0px;
   background-color: #171717;
   width: 150px;
@@ -131,9 +134,7 @@ const Logout = styled.button`
   font-size: 17px;
   font-family: "Lato", sans-serif;
   font-weight: 700;
-  p{
-    cursor: pointer;
-  }
+
 `;
 
 const InputContainer = styled.div`
