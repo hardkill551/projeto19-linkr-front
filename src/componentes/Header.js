@@ -79,20 +79,21 @@ export default function Header() {
         <ProfilePicture
           src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png"
           alt="profile-picture"
+          data-test="avatar"
         />
       </MyContent>
 
       
     </HeaderContainer>
     {logoutBox && (
-        <Centralizer>
+        <Centralizer data-test="menu">
           <motion.div
             animate={{ y: 0 }}
             initial={{ y: -60 }}
             exit={{ y: -60 }}
             transition={{ duration: 0.5, type: "tween" }}
           >
-            <Logout onClick={() => logout()}>
+            <Logout data-test="logout" onClick={() => logout()}>
               <p>Logout</p>
             </Logout>
           </motion.div>
@@ -113,9 +114,10 @@ const Centralizer = styled.div`
   right: 0px;
   top: 72px;
 `;
-const Logout = styled.div`
+const Logout = styled.button`
   font-size: 20px;
   color: white;
+  border:0px;
   background-color: #171717;
   width: 150px;
   height: 47px;
