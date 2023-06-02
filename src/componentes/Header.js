@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
+const token = localStorage.getItem("token");
 
 export default function Header() {
   const [findActive, setFindActive] = useState(false);
@@ -198,6 +199,7 @@ const User = styled.div`
   color: #515151;
   margin-top: 15px;
   align-items: center;
+  cursor: pointer;
   img {
     width: 39px;
     height: 39px;
