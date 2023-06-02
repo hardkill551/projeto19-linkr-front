@@ -20,22 +20,23 @@ export default function TimelinePage() {
     const [disabled, setDisabled] = useState(false);
     const [buttonText, setButtonText] = useState("Publishing");
     const [reloadPage, setReloadPage] = useState(false);
-    const {userInfo, setUserInfo} = useContext(UserContext)
-    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
+    const { userInfo, setUserInfo } = useContext(UserContext)
+    const { logoutBox, setLogoutBox } = useContext(LogoutContext)
 
-    useEffect(()=>{
-        if(token){
-            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+    useEffect(() => {
+        if (token) {
+            axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
+                headers: {
                     Authorization: `Bearer ${token}`
                 }
-            }).then(res=>{
-                setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
-            }).catch(err=>{
+            }).then(res => {
+                setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
+            }).catch(err => {
                 localStorage.clear();
                 navigate("/")
             })
         }
-        else{
+        else {
             navigate("/")
         }
 
@@ -47,7 +48,7 @@ export default function TimelinePage() {
         request.catch(err => {
             setError(true);
         });
-    },[reloadPage])
+    }, [reloadPage])
 
     if (error) {
         return (
@@ -88,7 +89,7 @@ export default function TimelinePage() {
         });
 
         request.catch(err => {
-            alert("There was an error publishing your link.");
+            alert("There was an error publishing your link");
             setDisabled(false);
             setButtonText("Publishing");
         })
@@ -102,7 +103,7 @@ export default function TimelinePage() {
                     <ContentContainer>
                         <h1>timeline</h1>
                         <PublishingContainer data-test="publish-box">
-                            <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
+                            <ProfilePicture src={userInfo.picture} alt="profile-picture" />
                             <div>
                                 <h2>What are you going to share today?</h2>
                                 <form disabled={disabled} onSubmit={createPost}>
@@ -138,7 +139,7 @@ export default function TimelinePage() {
             <ContentContainer onClick={() => setLogoutBox(false)}>
                 <h1>timeline</h1>
                 <PublishingContainer data-test="publish-box">
-                    <ProfilePicture src="https://www.gov.br/cdn/sso-status-bar/src/image/user.png" alt="profile-picture" />
+                    <ProfilePicture src={userInfo.picture} alt="profile-picture" />
                     <div>
                         <h2>What are you going to share today?</h2>
                         <form disabled={disabled} onSubmit={createPost}>
@@ -190,6 +191,7 @@ p{
     font-size: 24px;
     line-height: 36px;
     color: #ffffff;
+    height: 276px;
 }
 `
 

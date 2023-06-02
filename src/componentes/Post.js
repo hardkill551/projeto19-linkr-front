@@ -39,11 +39,11 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             <div>
                 <h2 data-test="username">{name}</h2>
                 <h3 data-test="description">{renderMessageWithHashtags()}</h3>
-                <LinkContainer data-test="link" onClick={() => redirectToUrl(link)}>
+                <LinkContainer onClick={() => redirectToUrl(link)}>
                     <div>
                         <h4>{linkTitle}</h4>
                         <p>{linkDescription}</p>
-                        <a href={link}>{link}</a>
+                        <a data-test="link" href={link}>{link}</a>
                     </div>
                     <img src={linkImage} alt="urlImage"></img>
                 </LinkContainer>
