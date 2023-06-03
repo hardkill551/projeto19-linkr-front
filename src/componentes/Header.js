@@ -140,6 +140,10 @@ const Logout = styled.button`
 const InputContainer = styled.div`
   position: relative;
   display: inline-block;
+
+  @media(max-width:800px){
+    display:none;
+  }
 `;
 const StyledInput = styled(DebounceInput)`
   width: 563px;
@@ -223,6 +227,8 @@ const HeaderContainer = styled.div`
   padding: 10px 28px;
   position:relative;
   z-index:1;
+
+  
 `;
 const Logo = styled.div`
   font-family: "Passion One";

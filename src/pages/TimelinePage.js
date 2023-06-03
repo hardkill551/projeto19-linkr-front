@@ -174,7 +174,7 @@ const PublishingContainer = styled.div`
     margin-bottom:29px;
     padding: 16px 22px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap:18px;
     h2 {
         font-family: 'Lato';
@@ -207,7 +207,23 @@ const PublishingContainer = styled.div`
     form{
     display: flex;
     flex-direction: column;
-}
+    }
+    @media (max-width:611px){
+        width:100%;
+        border-radius: 0px;
+        div, input, textarea{
+            width:100%;
+        }
+
+    }
+    @media(max-width:415px){
+        div{
+            width:100%;
+        }
+        h2 {
+            text-align: center;
+        }
+    }
 `
 const PublishButton = styled.button`
         width: 112px;

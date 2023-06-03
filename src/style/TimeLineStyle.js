@@ -13,12 +13,22 @@ export const TimelineContainer = styled.div`
         color: #FFFFFF;
         padding-top: 70px;
     }
+
+    @media (max-width:611px){
+        h1{
+            padding-left:10px;
+        }
+    }
 `
 export const ContentContainer = styled.div`
     width: 611px;
     height: 100%;
     margin-left: auto;
     margin-right: auto;
+
+    @media (max-width:611px){
+        width:100%;
+    }
 `
 
 export const ProfilePicture = styled.img`
@@ -27,6 +37,10 @@ export const ProfilePicture = styled.img`
     border-radius: 26.5px;
     object-fit: cover;
     background-color: #EFEFEF;
+
+    @media (max-width:415px){
+        display:none;
+    }
 `
 export const Posts = styled.div`
     display:flex;

@@ -171,7 +171,43 @@ const LinkContainer = styled.div`
         text-decoration: none;
         margin-top:5px;
     }
+    @media (max-width:611px){
+        min-width: 100%;
+        img{
+            width:30%;
+        }
+        div{
+            width:70%;
+            padding:10px;
+            overflow: hidden;
+        }
+    }
 
+    @media (max-width:530px){
+              
+        img{
+            min-width:95px;
+        }
+        div{
+            max-width:(100% - 95px);
+        }
+        
+    }
+    @media (max-width:375px){
+        h4{
+            font-size: 11px;
+            line-height: 13px;
+        }
+        p{
+            font-size: 9px;
+            line-height: 10px;
+        }
+        a{
+            font-size: 9px;
+            line-height: 10px;
+            margin-top:1px;
+        }
+    }
 `
 
 const PostContainer = styled.div`
@@ -182,7 +218,7 @@ const PostContainer = styled.div`
     margin-bottom:29px;
     padding: 16px 22px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap:18px;
     h2 {
         font-family: 'Lato';
@@ -202,8 +238,18 @@ const PostContainer = styled.div`
         margin-bottom: 12px;
         max-height: 52px;
     }
-    div{
-        width:502px;
+
+    @media (max-width:611px){
+        width:100%;
+        border-radius: 0px;
+        padding: 16px 10px;
+        gap:18px;
+    }
+
+    @media (max-width:580px){
+        div{
+        max-width:85%;
+        } 
     }
 `
 
@@ -213,4 +259,9 @@ const ProfilePicture = styled.img`
     border-radius: 26.5px;
     object-fit: cover;
     background-color: #EFEFEF;
+
+    @media (max-width:611px){
+    width: 40px;
+    height: 40px;
+    }
 `
