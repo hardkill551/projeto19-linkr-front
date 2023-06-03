@@ -17,7 +17,7 @@ export default function UserPage() {
     const token = localStorage.getItem("token");
     const {userInfo, setUserInfo} = useContext(UserContext)
     const {logoutBox, setLogoutBox} = useContext(LogoutContext)
-    console.log(posts)
+    
     
     useEffect(() => {
         if(token){

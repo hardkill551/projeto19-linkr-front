@@ -44,10 +44,12 @@ export default function TimelinePage() {
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        request.then(response => { setPosts(response.data) });
+        request.then(response => { setPosts(response.data)
+            console.log(response.data) });
         request.catch(err => {
             setError(true);
         });
+        
     }, [reloadPage])
 
     if (error) {
@@ -151,7 +153,7 @@ export default function TimelinePage() {
                     </div>
                 </PublishingContainer>
                 <Posts posts={posts}>
-                    {posts.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.userId}/>)}
+                    {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId}/>)}
                     <p data-test="message">There are no posts yet</p>
                 </Posts>
 
