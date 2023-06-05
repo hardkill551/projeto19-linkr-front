@@ -6,11 +6,14 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId }) {
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser }) {
     const navigate = useNavigate();
     const {userInfo} = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
     const [count, setCount] = useState(Number(like_count))
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [showWhoLike, setShowWhoLike] = useState("")
+
     useEffect(()=>{
         axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
             headers: {
@@ -22,7 +25,37 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }).catch(err=>{
             console.log(err.response.data)
         })
-    },[])
+
+        axios.get(process.env.REACT_APP_API_URL+"/likes/"+postId, {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }).then(res=>{
+            const user = res.data.some(obj => obj.name === nameUser)
+            const newArray = res.data.filter(obj => obj.name !== nameUser)
+            if(user){
+                if(res.data.length === 1){
+                    setShowWhoLike("Você")
+                }else if(res.data.length === 2){
+                setShowWhoLike("Você" + " e " + newArray[1].name)
+                }else if(res.data.length > 2){
+                setShowWhoLike("Você" + ", " + newArray[1].name + " e outras " + (Number(res.data.length)-2) + " " + " pessoas")
+                }
+            }else{
+                if(res.data.length === 1){
+                    setShowWhoLike(res.data[0].name)
+                }else if(res.data.length === 2){
+                setShowWhoLike(res.data[0].name + " e " + res.data[1].name)
+                }else if(res.data.length > 2){
+                setShowWhoLike(res.data[0].name + ", " + res.data[1].name + " e outras " + (Number(res.data.length)-2) + " " + " pessoas")
+                }
+            }
+            
+        }).catch(err=>{
+            console.log(err.response.data)
+        })
+    },[showTooltip])
+
     function redirectToUrl(link) {
         window.open(link);
     }
@@ -31,6 +64,13 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         navigate("/user/"+id)
     }
 
+    function handleMouseEnter(){
+        setShowTooltip(true);
+    }
+
+    function handleMouseLeave(){
+        setShowTooltip(false);
+    } 
 
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
@@ -61,8 +101,11 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         <PostContainer data-test="post">
             <Likes like={likeOn}>
                 <ProfilePicture src={picture} alt="profile-picture" />
-                {likeOn?<AiFillHeart data-test="like-btn" onClick={()=>deslike()}/>:<AiOutlineHeart data-test="like-btn" onClick={()=>giveLike()}/>}
+                {likeOn?<AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>deslike()}/>:<AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>giveLike()}/>}
                 <h5 data-test="counter">{Number(count)} likes</h5>
+                <Tooltip data-test="tooltip" showTooltip={showTooltip}>
+                    <p>{showWhoLike}</p>
+                </Tooltip>
             </Likes>
             <div>
                 <h2 data-test="username" onClick={()=>goToUserPage(id)}>{name}</h2>
@@ -108,13 +151,49 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     }
 
 }
-
+const Tooltip = styled.div`
+    display: ${({showTooltip})=> showTooltip?'flex':'none'};
+    width: auto;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 3px;
+    position: absolute;
+    top: 130px;
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin: 0;
+    p{
+        color: #505050;
+        display: ${({showTooltip})=> showTooltip?'flex':'none'};
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 11px;
+        line-height: 13px;
+        top:-17px;
+        white-space: nowrap;
+        position: relative;
+    }
+    ::before {
+        content: '';
+        position: absolute;
+        top: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 12px;
+        border-style: solid;
+        border-color: transparent transparent rgba(255, 255, 255, 0.9) transparent;
+  }
+`
 const HashtagLink = styled(Link)`
     color: #CECECE;
     font-weight: bold;
     text-decoration: none;
 `;
 const Likes = styled.div`
+position: relative;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -123,7 +202,8 @@ svg{
     font-size:30px;
     margin-top:15px;
     margin-bottom:5px;
-    color:${(props) => props.like ? "#AC0000" : "white"}
+    color:${(props) => props.like ? "#AC0000" : "white"};
+    cursor: pointer;
 }
 h5{
     color:white;
