@@ -32,7 +32,7 @@ export default function UserPage() {
             })
         }
         else{
-            navigate("/")
+            navigate("/") 
         }
         
         axios.get(process.env.REACT_APP_API_URL+"/posts/"+id,
@@ -69,22 +69,7 @@ export default function UserPage() {
                     </ContentContainer>
                 </TimelineContainer></>
         )
-    }/*
-    if(posts){
-        if(posts.postsUser.length === 0){
-        return (
-            <><Header />
-                <TimelineContainer onClick={() => setLogoutBox(false)}>
-                    <ContentContainer>
-                        <h1>{posts.name}</h1>
-                       <Posts>
-                        <p>There are no posts yet</p>
-                       </Posts>
-                    </ContentContainer>
-                </TimelineContainer></>
-        )
-        }
-    }*/
+    }
     return (
         <><Header />
             <TimelineContainer onClick={() => setLogoutBox(false)}>
@@ -95,7 +80,7 @@ export default function UserPage() {
                     </ProfileContainer>
                     
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id}/>)}
+                        {posts.postsUser.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id}/>)}
                     </Posts>
                 </ContentContainer>
             </TimelineContainer></>
@@ -107,6 +92,9 @@ const ProfileContainer = styled.div`
     height: 158px;
     padding-left: 24px;
     align-items: center;
+    @media(max-width:800px){
+        padding-top: 15px;
+  }
     h1{
         padding: 0px;
     }
