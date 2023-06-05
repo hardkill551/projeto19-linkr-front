@@ -160,6 +160,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 const Tooltip = styled.div`
     display: ${({showTooltip})=> showTooltip?'flex':'none'};
     width: auto;
+    /* min-width: 169px; */
     height: 24px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 3px;
