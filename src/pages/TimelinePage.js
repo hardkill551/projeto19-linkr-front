@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../axios";
 import Post from "../componentes/Post";
 import { ThreeDots } from 'react-loader-spinner'
-import { ContentContainer, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
+import { ContentContainer, Loading, Posts, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
 import axios from "axios";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
@@ -44,10 +44,12 @@ export default function TimelinePage() {
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        request.then(response => { setPosts(response.data) });
+        request.then(response => { setPosts(response.data)
+            console.log(response.data)  });
         request.catch(err => {
             setError(true);
         });
+        
     }, [reloadPage])
 
     if (error) {
@@ -151,7 +153,7 @@ export default function TimelinePage() {
                     </div>
                 </PublishingContainer>
                 <Posts posts={posts}>
-                    {posts.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} />)}
+                    {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name}/>)}
                     <p data-test="message">There are no posts yet</p>
                 </Posts>
 
@@ -160,40 +162,7 @@ export default function TimelinePage() {
     )
 }
 
-const Loading = styled.div`
-    width: 611px;
-    height: 100vh;
-    display:flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    h2 {
-        font-family: 'Oswald';
-        font-weight: 400;
-        font-size: 24px;
-        line-height: 36px;
-        color: #ffffff;
-        margin-bottom: 5px;
-        margin-top:5px;
-    }
-`
 
-const Posts = styled.div`
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-p{
-    margin-top:30px;
-    display:${(props) => (props.posts.length !== 0 ? "none" : "flex")};
-    font-family: 'Oswald';
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 36px;
-    color: #ffffff;
-    height: 276px;
-}
-`
 
 const PublishingContainer = styled.div`
     width: 611px;
@@ -205,7 +174,7 @@ const PublishingContainer = styled.div`
     margin-bottom:29px;
     padding: 16px 22px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap:18px;
     h2 {
         font-family: 'Lato';
@@ -238,7 +207,23 @@ const PublishingContainer = styled.div`
     form{
     display: flex;
     flex-direction: column;
-}
+    }
+    @media (max-width:611px){
+        width:100%;
+        border-radius: 0px;
+        div, input, textarea{
+            width:100%;
+        }
+
+    }
+    @media(max-width:415px){
+        div{
+            width:100%;
+        }
+        h2 {
+            text-align: center;
+        }
+    }
 `
 const PublishButton = styled.button`
         width: 112px;
