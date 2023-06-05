@@ -45,7 +45,7 @@ export default function TimelinePage() {
         );
 
         request.then(response => { setPosts(response.data)
-            console.log(response.data) });
+            console.log(response.data)  });
         request.catch(err => {
             setError(true);
         });
