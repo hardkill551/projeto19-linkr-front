@@ -102,6 +102,7 @@ export default function UserPage() {
     )
 }
 
+
 const ProfileContainer = styled.div`
     display: flex;
     height: 158px;
