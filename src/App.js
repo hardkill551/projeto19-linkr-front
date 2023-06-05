@@ -3,6 +3,7 @@ import TimelinePage from "./pages/TimelinePage";
 import UserPage from "./pages/UserPage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
+import Hashtag from "./pages/HashtagPage/Hashtag.js"
 
 function App() {
   
