@@ -39,14 +39,14 @@ export default function UserPage() {
             { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(response => { 
-            console.log(response.data.postsUser);
+            console.log(response.data);
             setPosts(response.data);
         })
         .catch(err => console.log(err))
 
   
     }, [id]);
-    console.log(posts)
+    
     
     if (!posts) {
         return (
@@ -80,7 +80,7 @@ export default function UserPage() {
                     </ProfileContainer>
                     
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id}/>)}
+                        {posts.postsUser.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} liked_by={p.liked_by}/>)}
                     </Posts>
                 </ContentContainer>
             </TimelineContainer></>

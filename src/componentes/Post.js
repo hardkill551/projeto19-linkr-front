@@ -6,7 +6,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser }) {
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by }) {
     const navigate = useNavigate();
     const {userInfo} = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -15,6 +15,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [showWhoLike, setShowWhoLike] = useState("")
 
     useEffect(()=>{
+        console.log(postId)
         axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
@@ -26,35 +27,40 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             console.log(err.response.data)
         })
 
-        axios.get(process.env.REACT_APP_API_URL+"/likes/"+postId, {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }).then(res=>{
-            const user = res.data.some(obj => obj.name === nameUser)
-            const newArray = res.data.filter(obj => obj.name !== nameUser)
+        // axios.get(process.env.REACT_APP_API_URL+"/likes/"+postId, {
+        //     headers: {
+        //         Authorization: `Bearer ${userInfo.token}`
+        //     }
+        // }).then(res=>{
+            
+            
+        // }).catch(err=>{
+        //     console.log(err.response.data)
+        // })
+        console.log(liked_by)
+        if(liked_by){
+            const user = liked_by.some(obj => obj.name === nameUser)
+            const newArray = liked_by.filter(obj => obj.name !== nameUser)
             if(user){
-                if(res.data.length === 1){
+                if(liked_by.length === 1){
                     setShowWhoLike("Você")
-                }else if(res.data.length === 2){
+                }else if(liked_by.length === 2){
                 setShowWhoLike("Você" + " e " + newArray[1].name)
-                }else if(res.data.length > 2){
-                setShowWhoLike("Você" + ", " + newArray[1].name + " e outras " + (Number(res.data.length)-2) + " " + " pessoas")
+                }else if(liked_by.length > 2){
+                setShowWhoLike("Você" + ", " + newArray[1].name + " e outras " + (Number(liked_by.length)-2) + " " + " pessoas")
                 }
             }else{
-                if(res.data.length === 1){
-                    setShowWhoLike(res.data[0].name)
-                }else if(res.data.length === 2){
-                setShowWhoLike(res.data[0].name + " e " + res.data[1].name)
-                }else if(res.data.length > 2){
-                setShowWhoLike(res.data[0].name + ", " + res.data[1].name + " e outras " + (Number(res.data.length)-2) + " " + " pessoas")
+                if(liked_by.length === 1){
+                    setShowWhoLike(liked_by[0].name)
+                }else if(liked_by.length === 2){
+                setShowWhoLike(liked_by[0].name + " e " + liked_by[1].name)
+                }else if(liked_by.length > 2){
+                setShowWhoLike(liked_by[0].name + ", " + liked_by[1].name + " e outras " + (Number(liked_by.length)-2) + " " + " pessoas")
                 }
             }
-            
-        }).catch(err=>{
-            console.log(err.response.data)
-        })
-    },[showTooltip])
+        }
+    },[showWhoLike])
+
 
     function redirectToUrl(link) {
         window.open(link);
