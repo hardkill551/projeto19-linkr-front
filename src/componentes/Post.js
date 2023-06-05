@@ -62,6 +62,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     },[showWhoLike])
 
 
+    
     function redirectToUrl(link) {
         window.open(link);
     }
