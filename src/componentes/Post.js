@@ -12,17 +12,44 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [likeOn, setLikeOn] = useState(false)
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
-    const [showWhoLike, setShowWhoLike] = useState("")
+    const [showWhoLike, setShowWhoLike] = useState("");
+    const [arrayLikes, setArrayLikes] = useState([]);
+    const [notShowTooltip, setNotShowToolTip] = useState(false)
 
     useEffect(()=>{
-        console.log(postId)
+        setShowWhoLike("")
         axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
             }
         } ).then(res=>{
             if(res.data) setLikeOn(true)
+            console.log(liked_by) 
             
+            setArrayLikes([...liked_by])
+            const user = liked_by.some(obj => obj === nameUser)
+            console.log(nameUser)
+            console.log([user])
+            
+            const newArray = liked_by.filter(obj => obj !== nameUser);
+            
+            console.log("novo array:"+ newArray)
+            if(liked_by.length ===0){
+                setNotShowToolTip(true)
+            }else if(liked_by.length === 1 && user){ //caso em que o unico like é meu
+                setShowWhoLike("Você")
+            }else if(liked_by.length === 1 && !user){ //caso em q o unico like q tem nao fui eu quem dei
+                setShowWhoLike(liked_by[0])
+            }else if(liked_by.length === 2 && user){ //caso em qque tem 2 likes e um é meu
+                setShowWhoLike(`Você e ${newArray[0]}`)
+            }else if(liked_by.length === 2 && !user){ //caso em que tem dois likes e nenhum é meu
+                setShowWhoLike(`${liked_by[0]} e ${liked_by[1]}`)
+            }else if(liked_by.length >= 3 && user){
+                setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length -2} pessoas`)//caso em que tem mais de dois likes e um é meu
+            }else if(liked_by.length >= 3 && !user){
+                setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length -2} pessoas`)
+            }
+    
         }).catch(err=>{
             console.log(err.response.data)
         })
@@ -37,29 +64,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         // }).catch(err=>{
         //     console.log(err.response.data)
         // })
-        console.log(liked_by)
-        if(liked_by){
-            const user = liked_by.some(obj => obj.name === nameUser)
-            const newArray = liked_by.filter(obj => obj.name !== nameUser)
-            if(user){
-                if(liked_by.length === 1){
-                    setShowWhoLike("Você")
-                }else if(liked_by.length === 2){
-                setShowWhoLike("Você" + " e " + newArray[1].name)
-                }else if(liked_by.length > 2){
-                setShowWhoLike("Você" + ", " + newArray[1].name + " e outras " + (Number(liked_by.length)-2) + " " + " pessoas")
-                }
-            }else{
-                if(liked_by.length === 1){
-                    setShowWhoLike(liked_by[0].name)
-                }else if(liked_by.length === 2){
-                setShowWhoLike(liked_by[0].name + " e " + liked_by[1].name)
-                }else if(liked_by.length > 2){
-                setShowWhoLike(liked_by[0].name + ", " + liked_by[1].name + " e outras " + (Number(liked_by.length)-2) + " " + " pessoas")
-                }
-            }
-        }
-    },[showWhoLike])
+        
+    },[])
 
 
     function redirectToUrl(link) {
@@ -71,10 +77,18 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     }
 
     function handleMouseEnter(){
+        if(notShowTooltip){
+            setShowTooltip(false);
+            return;
+        }
         setShowTooltip(true);
+        console.log(showWhoLike)
     }
 
     function handleMouseLeave(){
+        if(notShowTooltip){
+            return;
+        }
         setShowTooltip(false);
     } 
 
@@ -139,6 +153,17 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
           } ).then(res=>{
             setLikeOn(false)
             setCount(Number(count-1))
+            if(Number(count-1) === 0){
+                setNotShowToolTip(true)
+                setShowWhoLike("")
+            }else if(Number(count-1) === 1){
+                setShowWhoLike(liked_by[0])
+            }else if(Number(count-1) === 2){
+                setShowWhoLike(`${liked_by[0]} e ${liked_by[1]}`)
+            }else if(Number(count-1) >= 3){
+                setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length -2} pessoas`)
+            }
+            
         }).catch(err=>{
             console.log(err.response.data)
         })
@@ -151,8 +176,18 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         } ).then(res=>{
             setLikeOn(true)
             setCount(Number(count+1))
+            console.log(arrayLikes) 
+            if(Number(count+1) === 1){
+                setNotShowToolTip(false) //não tinha like e agora tem e o unico q tem é seu! Então pode mostrar
+                setShowWhoLike("Você")
+            }else if((Number(count+1) === 2)){
+                setShowWhoLike(`Você e ${liked_by[0]}`)
+            }else if((Number(count+1) >= 3)){
+                setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length - 1} pessoas`)
+            }
         }).catch(err=>{
-            console.log(err.response.data)
+            console.log("é aqui")
+            console.log(err)
         })
     }
 

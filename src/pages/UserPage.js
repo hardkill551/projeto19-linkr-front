@@ -80,7 +80,7 @@ export default function UserPage() {
                     </ProfileContainer>
                     
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} liked_by={p.liked_by}/>)}
+                        {posts.postsUser.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} nameUser={userInfo.name} liked_by={p.liked_by}/>)}
                     </Posts>
                 </ContentContainer>
             </TimelineContainer></>
