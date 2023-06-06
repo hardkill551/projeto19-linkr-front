@@ -193,7 +193,7 @@ const Tooltip = styled.div`
     align-items: center;
     justify-content: center;
     padding: 5px;
-    margin: 0;
+    margin: 0; 
     p{
         color: #505050;
         display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
