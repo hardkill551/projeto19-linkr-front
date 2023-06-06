@@ -30,8 +30,8 @@ export default function TimelinePage() {
                     Authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                console.log(res.data)
-                setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
+                console.log(res.data) 
+                //setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
             }).catch(err => {
                 localStorage.clear();
                 navigate("/")

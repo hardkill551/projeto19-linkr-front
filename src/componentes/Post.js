@@ -17,7 +17,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [notShowTooltip, setNotShowToolTip] = useState(false)
 
     useEffect(()=>{
-        setShowWhoLike("")
+        setShowWhoLike("")   
         console.log(liked_by)
         setArrayLikes([...liked_by])
         const user = liked_by.some(obj => obj === nameUser)
@@ -42,9 +42,10 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }else if(liked_by.length >= 3 && !user){
             setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length -2} pessoas`)
         }
+        const token = localStorage.getItem("token")
         axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`
+                Authorization: `Bearer ${token}`
             }
         } ).then(res=>{
             if(res.data) setLikeOn(true)
