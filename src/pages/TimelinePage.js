@@ -9,6 +9,7 @@ import { ContentContainer, Loading, Posts, ProfilePicture, TimelineContainer } f
 import axios from "axios";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
+import Trending from "../componentes/Trending";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
@@ -44,12 +45,11 @@ export default function TimelinePage() {
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        request.then(response => { setPosts(response.data)
-            console.log(response.data)  });
+        request.then(response => { setPosts(response.data) });
         request.catch(err => {
             setError(true);
         });
-        
+
     }, [reloadPage])
 
     if (error) {
@@ -103,19 +103,6 @@ export default function TimelinePage() {
             <><Header />
                 <TimelineContainer onClick={() => setLogoutBox(false)}>
                     <ContentContainer>
-                        <h1>timeline</h1>
-                        <PublishingContainer data-test="publish-box">
-                            <ProfilePicture src={userInfo.picture} alt="profile-picture" />
-                            <div>
-                                <h2>What are you going to share today?</h2>
-                                <form disabled={disabled} onSubmit={createPost}>
-                                    <input data-test="link" disabled={disabled} type="url" required placeholder="Link" value={link} onChange={e => setLink(e.target.value)} />
-                                    <textarea data-test="description" className="captionInput" disabled={disabled} type="text" placeholder="Caption" value={message} onChange={e => setMessage(e.target.value)} />
-                                    <PublishButton data-test="publish-btn" disabled={disabled} type="submit">{buttonText}</PublishButton>
-                                </form>
-
-                            </div>
-                        </PublishingContainer>
                         <Loading>
                             <h2 data-test="message">Loading</h2>
                             <div><ThreeDots
@@ -130,35 +117,38 @@ export default function TimelinePage() {
                             /></div>
                         </Loading>
                     </ContentContainer>
+
                 </TimelineContainer></>
         )
     }
 
     return (
-        <TimelineContainer>
-            <Header />
 
-            <ContentContainer onClick={() => setLogoutBox(false)}>
-                <h1>timeline</h1>
-                <PublishingContainer data-test="publish-box">
-                    <ProfilePicture src={userInfo.picture} alt="profile-picture" />
-                    <div>
-                        <h2>What are you going to share today?</h2>
-                        <form disabled={disabled} onSubmit={createPost}>
-                            <input data-test="link" disabled={disabled} type="url" required placeholder="Link" value={link} onChange={e => setLink(e.target.value)} />
-                            <textarea data-test="description" className="captionInput" disabled={disabled} type="text" placeholder="Caption" value={message} onChange={e => setMessage(e.target.value)} />
-                            <PublishButton data-test="publish-btn" disabled={disabled} type="submit">{buttonText}</PublishButton>
-                        </form>
+        <><Header />
+            <TimelineContainer>
+                <ContentContainer onClick={() => setLogoutBox(false)}>
+                    <h1>timeline</h1>
+                    <PublishingContainer data-test="publish-box">
+                        <ProfilePicture src={userInfo.picture} alt="profile-picture" />
+                        <div>
+                            <h2>What are you going to share today?</h2>
+                            <form disabled={disabled} onSubmit={createPost}>
+                                <input data-test="link" disabled={disabled} type="url" required placeholder="Link" value={link} onChange={e => setLink(e.target.value)} />
+                                <textarea data-test="description" className="captionInput" disabled={disabled} type="text" placeholder="Caption" value={message} onChange={e => setMessage(e.target.value)} />
+                                <PublishButton data-test="publish-btn" disabled={disabled} type="submit">{buttonText}</PublishButton>
+                            </form>
 
-                    </div>
-                </PublishingContainer>
-                <Posts posts={posts}>
-                    {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name}/>)}
-                    <p data-test="message">There are no posts yet</p>
-                </Posts>
+                        </div>
+                    </PublishingContainer>
+                    <Posts posts={posts}>
+                        {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} />)}
+                        <p data-test="message">There are no posts yet</p>
+                    </Posts>
 
-            </ContentContainer>
-        </TimelineContainer>
+                </ContentContainer>
+                <Trending posts={posts} />
+            </TimelineContainer>
+        </>
     )
 }
 
@@ -170,7 +160,6 @@ const PublishingContainer = styled.div`
     background-color: #FFFFFF;
     border-radius: 16px;
     box-shadow: 0px, 4px rgba(0, 0, 0, 0.25);
-    margin-top:43px;
     margin-bottom:29px;
     padding: 16px 22px;
     display: flex;

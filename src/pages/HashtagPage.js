@@ -1,24 +1,25 @@
+import { useContext, useEffect, useState } from "react";
 import Header from "../componentes/Header";
 import styled from "styled-components";
-import Post from "../componentes/Post";
-import { ContentContainer, Loading, Posts, ProfilePicture, TimelineContainer } from "../style/TimeLineStyle";
-import { useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { ContentContainer, Loading, Posts, TimelineContainer } from "../style/TimeLineStyle";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
+import Post from "../componentes/Post";
+import { useNavigate } from "react-router-dom";
+import api from "../axios";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import { ThreeDots } from 'react-loader-spinner'
 import Trending from "../componentes/Trending";
 
-export default function UserPage() {
-    const { id } = useParams();
-    const navigate = useNavigate()
-    const [posts, setPosts] = useState(null);
+export default function HashtagPage() {
+
     const token = localStorage.getItem("token");
+    const [posts, setPosts] = useState(null);
     const { userInfo, setUserInfo } = useContext(UserContext)
     const { logoutBox, setLogoutBox } = useContext(LogoutContext)
-
+    const navigate = useNavigate();
+    const { hashtag } = useParams();
 
     useEffect(() => {
         if (token) {
@@ -37,16 +38,14 @@ export default function UserPage() {
             navigate("/")
         }
 
-        axios.get(process.env.REACT_APP_API_URL + "/posts/" + id,
+        axios.get(process.env.REACT_APP_API_URL + "/hashtag/" + hashtag,
             { headers: { Authorization: `Bearer ${token}` } }
         )
             .then(response => {
                 setPosts(response.data);
             })
             .catch(err => console.log(err))
-
-
-    }, [id]);
+    }, [hashtag]);
 
 
     if (!posts) {
@@ -70,51 +69,17 @@ export default function UserPage() {
                     </ContentContainer>
                 </TimelineContainer></>
         )
-    }/*
-    if(posts){
-        if(posts.postsUser.length === 0){
-        return (
-            <><Header />
-                <TimelineContainer onClick={() => setLogoutBox(false)}>
-                    <ContentContainer>
-                        <h1>{posts.name}</h1>
-                       <Posts>
-                        <p>There are no posts yet</p>
-                       </Posts>
-                    </ContentContainer>
-                </TimelineContainer></>
-        )
-        }
-    }*/
-    return (
-        <><Header />
-            <TimelineContainer onClick={() => setLogoutBox(false)}>
-                <ContentContainer>
-                    <ProfileContainer>
-                        <ProfilePicture src={posts.picture} alt="profile-picture" />
-                        <h1>{posts.name}'s posts</h1>
-                    </ProfileContainer>
+    }
 
-                    <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id} />)}
-                    </Posts>
-                </ContentContainer>
-                <Trending />
-            </TimelineContainer></>
+    return (
+        <><Header /><TimelineContainer onClick={() => setLogoutBox(false)}>
+            <ContentContainer>
+                <h1># {hashtag}</h1>
+                <Posts posts={posts}>
+                    {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} />)}
+                </Posts>
+            </ContentContainer>
+            <Trending />
+        </TimelineContainer></>
     )
 }
-
-
-const ProfileContainer = styled.div`
-    display: flex;
-    height: 177px;
-    padding-left: 24px;
-    align-items: center;
-    h1{
-        padding: 0px;
-    }
-    img{
-        margin-right: 18px;
-        margin-bottom: 5px;
-    }
-`
