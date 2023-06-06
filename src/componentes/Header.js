@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { FaGreaterThan } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { BiSearch } from "react-icons/bi";
@@ -10,6 +11,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
 const token = localStorage.getItem("token");
+
 
 export default function Header() {
   const [findActive, setFindActive] = useState(false);
@@ -41,15 +43,7 @@ export default function Header() {
   return (
     <>
       <HeaderContainer>
-        <Logo>linkr</Logo>
-        <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
-          {users.map((user) => (
-            <User data-test="user-search" onClick={() => goToUserPage(user.id)} key={user.id}>
-              <img src={user.picture} alt="user-picture" />
-              <p>{user.name}</p>
-            </User>
-          ))}
-        </FindUsers>
+        <Logo to={"/timeline"}>linkr</Logo>
         <InputContainer onClick={() => setLogoutBox(false)} >
           <StyledInput
             data-test="search"
@@ -61,6 +55,14 @@ export default function Header() {
           />
           <Icon />
         </InputContainer>
+        <FindUsers onClick={() => setLogoutBox(false)} findActive={findActive}>
+          {users.map((user) => (
+            <User data-test="user-search" onClick={() => goToUserPage(user.id)} key={user.id}>
+              <img src={user.picture} alt="user-picture" />
+              <p>{user.name}</p>
+            </User>
+          ))}
+        </FindUsers>
         <MyContent onClick={() => setLogoutBox(!logoutBox)}>
           {logoutBox ? (
             <motion.section
@@ -142,12 +144,7 @@ const InputContainer = styled.div`
   display: inline-block;
 
   @media(max-width:800px){
-    position: absolute;
-    width: 95%;
-    top:80px;
-    left: 50%;
-    margin-left: 6px;
-    transform: translateX(-50%);
+    display:none;
   }
 `;
 const StyledInput = styled(DebounceInput)`
@@ -168,11 +165,6 @@ const StyledInput = styled(DebounceInput)`
   margin-left: -6px;
   ::placeholder {
     color: #c6c6c6;
-    width: 100vh;
-  }
-
-  @media(max-width:800px){
-    width: 100%;
   }
 `;
 const Icon = styled(BiSearch)`
@@ -203,11 +195,6 @@ const FindUsers = styled.ul`
   padding-bottom: 23px;
   padding-left: 17px;
   display: ${({ findActive }) => (findActive ? "block" : "none")};
-  @media(max-width:800px){
-    width: 95%;
-    top:20px;
-  }
-
 `;
 
 const User = styled.div`
@@ -245,12 +232,13 @@ const HeaderContainer = styled.div`
 
   
 `;
-const Logo = styled.div`
+const Logo = styled(Link)`
   font-family: "Passion One";
   font-size: 49px;
   font-weight: 700;
   line-height: 54px;
   color: #ffffff;
+  text-decoration: none;
 `;
 
 const Menu = styled(FaGreaterThan)`

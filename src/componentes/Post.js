@@ -8,7 +8,7 @@ import { UserContext } from "../ContextAPI/ContextUser";
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by }) {
     const navigate = useNavigate();
-    const {userInfo} = useContext(UserContext)
+    const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
@@ -56,12 +56,13 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     },[])
 
 
+    
     function redirectToUrl(link) {
         window.open(link);
     }
 
-    function goToUserPage(id){
-        navigate("/user/"+id)
+    function goToUserPage(id) {
+        navigate("/user/" + id)
     }
 
     function handleMouseEnter(){
@@ -78,7 +79,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             return;
         }
         setShowTooltip(false);
-    } 
+    }
 
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
@@ -108,14 +109,14 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         <PostContainer data-test="post">
             <Likes like={likeOn}>
                 <ProfilePicture src={picture} alt="profile-picture" />
-                {likeOn?<AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>deslike()}/>:<AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>giveLike()}/>}
+                {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
                 <h5 data-test="counter">{Number(count)} likes</h5>
                 <Tooltip data-test="tooltip" showTooltip={showTooltip}>
                     <p>{showWhoLike}</p>
                 </Tooltip>
             </Likes>
             <div>
-                <h2 data-test="username" onClick={()=>goToUserPage(id)}>{name}</h2>
+                <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
                 <h3 data-test="description">{renderMessageWithHashtags()}</h3>
                 <LinkContainer onClick={() => redirectToUrl(link)}>
                     <div>
@@ -129,15 +130,15 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         </PostContainer>
     );
 
-    function deslike(){
-        axios.delete(process.env.REACT_APP_API_URL+"/likes", {
+    function deslike() {
+        axios.delete(process.env.REACT_APP_API_URL + "/likes", {
             headers: {
-              Authorization: userInfo.token
+                Authorization: userInfo.token
             },
             data: {
-              postId
+                postId
             }
-          } ).then(res=>{
+        }).then(res => {
             setLikeOn(false)
             setCount(Number(count-1))
             if(Number(count-1) === 0){
@@ -155,12 +156,12 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             console.log(err.response.data)
         })
     }
-    function giveLike(){
-        axios.post(process.env.REACT_APP_API_URL+"/likes", {postId}, {
+    function giveLike() {
+        axios.post(process.env.REACT_APP_API_URL + "/likes", { postId }, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
             }
-        } ).then(res=>{
+        }).then(res => {
             setLikeOn(true)
             setCount(Number(count+1))
             console.log(arrayLikes) 
@@ -180,8 +181,9 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
 }
 const Tooltip = styled.div`
-    display: ${({showTooltip})=> showTooltip?'flex':'none'};
+    display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
     width: auto;
+    /* min-width: 169px; */
     height: 24px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 3px;
@@ -194,7 +196,7 @@ const Tooltip = styled.div`
     margin: 0;
     p{
         color: #505050;
-        display: ${({showTooltip})=> showTooltip?'flex':'none'};
+        display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
         font-family: 'Lato';
         font-style: normal;
         font-weight: 700;
@@ -255,6 +257,7 @@ const LinkContainer = styled.div`
         flex-direction: column;
         justify-content: space-between;
         padding: 20px;
+        overflow: hidden;
     }
     img{
         width:153px;
@@ -287,7 +290,7 @@ const LinkContainer = styled.div`
         div{
             width:70%;
             padding:10px;
-            overflow: hidden;
+            
         }
     }
 
