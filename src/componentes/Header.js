@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { FaGreaterThan } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { BiSearch } from "react-icons/bi";
@@ -10,6 +11,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
 const token = localStorage.getItem("token");
+
 
 export default function Header() {
   const [findActive, setFindActive] = useState(false);
@@ -41,7 +43,7 @@ export default function Header() {
   return (
     <>
       <HeaderContainer>
-        <Logo>linkr</Logo>
+        <Logo to={"/timeline"}>linkr</Logo>
         <InputContainer onClick={() => setLogoutBox(false)} >
           <StyledInput
             data-test="search"
@@ -230,12 +232,13 @@ const HeaderContainer = styled.div`
 
   
 `;
-const Logo = styled.div`
+const Logo = styled(Link)`
   font-family: "Passion One";
   font-size: 49px;
   font-weight: 700;
   line-height: 54px;
   color: #ffffff;
+  text-decoration: none;
 `;
 
 const Menu = styled(FaGreaterThan)`
