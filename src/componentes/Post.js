@@ -233,6 +233,7 @@ const LinkContainer = styled.div`
         flex-direction: column;
         justify-content: space-between;
         padding: 20px;
+        overflow: hidden;
     }
     img{
         width:153px;
@@ -265,7 +266,7 @@ const LinkContainer = styled.div`
         div{
             width:70%;
             padding:10px;
-            overflow: hidden;
+            
         }
     }
 

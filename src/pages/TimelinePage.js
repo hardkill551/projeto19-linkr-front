@@ -102,22 +102,19 @@ export default function TimelinePage() {
         return (
             <><Header />
                 <TimelineContainer onClick={() => setLogoutBox(false)}>
-                    <ContentContainer>
-                        <Loading>
-                            <h2 data-test="message">Loading</h2>
-                            <div><ThreeDots
-                                height="10"
-                                width="80"
-                                radius="9"
-                                color="#ffffff"
-                                ariaLabel="three-dots-loading"
-                                wrapperStyle={{}}
-                                wrapperClassName=""
-                                visible="true"
-                            /></div>
-                        </Loading>
-                    </ContentContainer>
-
+                    <Loading>
+                        <h2 data-test="message">Loading</h2>
+                        <div><ThreeDots
+                            height="10"
+                            width="80"
+                            radius="9"
+                            color="#ffffff"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible="true"
+                        /></div>
+                    </Loading>
                 </TimelineContainer></>
         )
     }
