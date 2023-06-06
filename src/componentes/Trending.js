@@ -18,12 +18,12 @@ export default function Trending({ posts }) {
     });
   }, [posts]);
   return (
-    <TrendingContainer>
+    <TrendingContainer data-test="trending">
       <h2>trending</h2>
       <ul>
         {trends.map((h, index) => (
           <li>
-            <HashtagLink key={index} to={`/hashtag/${h.hashtag}`}>
+            <HashtagLink data-test="hashtag" key={index} to={`/hashtag/${h.hashtag}`}>
               {`# ${h.hashtag}`}
             </HashtagLink>
           </li>

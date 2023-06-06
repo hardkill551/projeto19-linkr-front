@@ -72,7 +72,7 @@ export default function HashtagPage() {
     return (
         <><Header /><TimelineContainer onClick={() => setLogoutBox(false)}>
             <ContentContainer>
-                <h1># {hashtag}</h1>
+                <h1 data-test="hashtag-title"># {hashtag}</h1>
                 <Posts posts={posts}>
                     {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} />)}
                 </Posts>
