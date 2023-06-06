@@ -20,7 +20,6 @@ export default function TimelinePage() {
     const [message, setMessage] = useState("");
     const [disabled, setDisabled] = useState(false);
     const [buttonText, setButtonText] = useState("Publishing");
-    const [reloadPage, setReloadPage] = useState(false);
     const { userInfo, setUserInfo } = useContext(UserContext)
     const { logoutBox, setLogoutBox } = useContext(LogoutContext)
 
@@ -50,7 +49,7 @@ export default function TimelinePage() {
             setError(true);
         });
 
-    }, [reloadPage])
+    }, [posts])
 
     if (error) {
         return (
@@ -87,7 +86,6 @@ export default function TimelinePage() {
             setButtonText("Publishing");
             setLink("");
             setMessage("");
-            setReloadPage(true);
         });
 
         request.catch(err => {

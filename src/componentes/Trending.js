@@ -17,7 +17,6 @@ export default function Trending({ posts }) {
       console.log(error.response.data);
     });
   }, [posts]);
-  console.log(trends)
   return (
     <TrendingContainer>
       <h2>trending</h2>
