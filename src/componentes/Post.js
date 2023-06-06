@@ -18,52 +18,39 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
     useEffect(()=>{
         setShowWhoLike("")
+        console.log(liked_by)
+        setArrayLikes([...liked_by])
+        const user = liked_by.some(obj => obj === nameUser)
+        console.log(nameUser)
+        console.log([user])
+        
+        const newArray = liked_by.filter(obj => obj !== nameUser);
+
+        console.log("novo array:"+ newArray)
+        if(liked_by.length ===0){
+            setNotShowToolTip(true)
+        }else if(liked_by.length === 1 && user){ //caso em que o unico like é meu
+            setShowWhoLike("Você")
+        }else if(liked_by.length === 1 && !user){ //caso em q o unico like q tem nao fui eu quem dei
+            setShowWhoLike(liked_by[0])
+        }else if(liked_by.length === 2 && user){ //caso em qque tem 2 likes e um é meu
+            setShowWhoLike(`Você e ${newArray[0]}`)
+        }else if(liked_by.length === 2 && !user){ //caso em que tem dois likes e nenhum é meu
+            setShowWhoLike(`${liked_by[0]} e ${liked_by[1]}`)
+        }else if(liked_by.length >= 3 && user){
+            setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length -2} pessoas`)//caso em que tem mais de dois likes e um é meu
+        }else if(liked_by.length >= 3 && !user){
+            setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length -2} pessoas`)
+        }
         axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
             }
         } ).then(res=>{
             if(res.data) setLikeOn(true)
-            console.log(liked_by) 
-            
-            setArrayLikes([...liked_by])
-            const user = liked_by.some(obj => obj === nameUser)
-            console.log(nameUser)
-            console.log([user])
-            
-            const newArray = liked_by.filter(obj => obj !== nameUser);
-            
-            console.log("novo array:"+ newArray)
-            if(liked_by.length ===0){
-                setNotShowToolTip(true)
-            }else if(liked_by.length === 1 && user){ //caso em que o unico like é meu
-                setShowWhoLike("Você")
-            }else if(liked_by.length === 1 && !user){ //caso em q o unico like q tem nao fui eu quem dei
-                setShowWhoLike(liked_by[0])
-            }else if(liked_by.length === 2 && user){ //caso em qque tem 2 likes e um é meu
-                setShowWhoLike(`Você e ${newArray[0]}`)
-            }else if(liked_by.length === 2 && !user){ //caso em que tem dois likes e nenhum é meu
-                setShowWhoLike(`${liked_by[0]} e ${liked_by[1]}`)
-            }else if(liked_by.length >= 3 && user){
-                setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length -2} pessoas`)//caso em que tem mais de dois likes e um é meu
-            }else if(liked_by.length >= 3 && !user){
-                setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length -2} pessoas`)
-            }
-    
         }).catch(err=>{
             console.log(err.response.data)
         })
-
-        // axios.get(process.env.REACT_APP_API_URL+"/likes/"+postId, {
-        //     headers: {
-        //         Authorization: `Bearer ${userInfo.token}`
-        //     }
-        // }).then(res=>{
-            
-            
-        // }).catch(err=>{
-        //     console.log(err.response.data)
-        // })
         
     },[])
 
@@ -115,7 +102,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
         return message;
     }
-
 
     return (
         <PostContainer data-test="post">
