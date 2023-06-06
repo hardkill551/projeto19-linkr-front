@@ -8,22 +8,22 @@ import { UserContext } from "../ContextAPI/ContextUser";
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by }) {
     const navigate = useNavigate();
-    const {userInfo} = useContext(UserContext)
+    const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
     const [showWhoLike, setShowWhoLike] = useState("")
 
-    useEffect(()=>{
-        console.log(postId)
-        axios.post(process.env.REACT_APP_API_URL+"/likesCheck", {postId}, {
+    useEffect(() => {
+
+        axios.post(process.env.REACT_APP_API_URL + "/likesCheck", { postId }, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
             }
-        } ).then(res=>{
-            if(res.data) setLikeOn(true)
-            
-        }).catch(err=>{
+        }).then(res => {
+            if (res.data) setLikeOn(true)
+
+        }).catch(err => {
             console.log(err.response.data)
         })
 
@@ -32,34 +32,33 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         //         Authorization: `Bearer ${userInfo.token}`
         //     }
         // }).then(res=>{
-            
-            
+
+
         // }).catch(err=>{
         //     console.log(err.response.data)
         // })
-        console.log(liked_by)
-        if(liked_by){
+        if (liked_by) {
             const user = liked_by.some(obj => obj.name === nameUser)
             const newArray = liked_by.filter(obj => obj.name !== nameUser)
-            if(user){
-                if(liked_by.length === 1){
+            if (user) {
+                if (liked_by.length === 1) {
                     setShowWhoLike("Você")
-                }else if(liked_by.length === 2){
-                setShowWhoLike("Você" + " e " + newArray[1].name)
-                }else if(liked_by.length > 2){
-                setShowWhoLike("Você" + ", " + newArray[1].name + " e outras " + (Number(liked_by.length)-2) + " " + " pessoas")
+                } else if (liked_by.length === 2) {
+                    setShowWhoLike("Você" + " e " + newArray[1].name)
+                } else if (liked_by.length > 2) {
+                    setShowWhoLike("Você" + ", " + newArray[1].name + " e outras " + (Number(liked_by.length) - 2) + " " + " pessoas")
                 }
-            }else{
-                if(liked_by.length === 1){
+            } else {
+                if (liked_by.length === 1) {
                     setShowWhoLike(liked_by[0].name)
-                }else if(liked_by.length === 2){
-                setShowWhoLike(liked_by[0].name + " e " + liked_by[1].name)
-                }else if(liked_by.length > 2){
-                setShowWhoLike(liked_by[0].name + ", " + liked_by[1].name + " e outras " + (Number(liked_by.length)-2) + " " + " pessoas")
+                } else if (liked_by.length === 2) {
+                    setShowWhoLike(liked_by[0].name + " e " + liked_by[1].name)
+                } else if (liked_by.length > 2) {
+                    setShowWhoLike(liked_by[0].name + ", " + liked_by[1].name + " e outras " + (Number(liked_by.length) - 2) + " " + " pessoas")
                 }
             }
         }
-    },[showWhoLike])
+    }, [showWhoLike])
 
 
     
@@ -67,17 +66,17 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         window.open(link);
     }
 
-    function goToUserPage(id){
-        navigate("/user/"+id)
+    function goToUserPage(id) {
+        navigate("/user/" + id)
     }
 
-    function handleMouseEnter(){
+    function handleMouseEnter() {
         setShowTooltip(true);
     }
 
-    function handleMouseLeave(){
+    function handleMouseLeave() {
         setShowTooltip(false);
-    } 
+    }
 
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
@@ -108,14 +107,14 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         <PostContainer data-test="post">
             <Likes like={likeOn}>
                 <ProfilePicture src={picture} alt="profile-picture" />
-                {likeOn?<AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>deslike()}/>:<AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>giveLike()}/>}
+                {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
                 <h5 data-test="counter">{Number(count)} likes</h5>
                 <Tooltip data-test="tooltip" showTooltip={showTooltip}>
                     <p>{showWhoLike}</p>
                 </Tooltip>
             </Likes>
             <div>
-                <h2 data-test="username" onClick={()=>goToUserPage(id)}>{name}</h2>
+                <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
                 <h3 data-test="description">{renderMessageWithHashtags()}</h3>
                 <LinkContainer onClick={() => redirectToUrl(link)}>
                     <div>
@@ -129,37 +128,37 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         </PostContainer>
     );
 
-    function deslike(){
-        axios.delete(process.env.REACT_APP_API_URL+"/likes", {
+    function deslike() {
+        axios.delete(process.env.REACT_APP_API_URL + "/likes", {
             headers: {
-              Authorization: userInfo.token
+                Authorization: userInfo.token
             },
             data: {
-              postId
+                postId
             }
-          } ).then(res=>{
+        }).then(res => {
             setLikeOn(false)
-            setCount(Number(count-1))
-        }).catch(err=>{
+            setCount(Number(count - 1))
+        }).catch(err => {
             console.log(err.response.data)
         })
     }
-    function giveLike(){
-        axios.post(process.env.REACT_APP_API_URL+"/likes", {postId}, {
+    function giveLike() {
+        axios.post(process.env.REACT_APP_API_URL + "/likes", { postId }, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
             }
-        } ).then(res=>{
+        }).then(res => {
             setLikeOn(true)
-            setCount(Number(count+1))
-        }).catch(err=>{
+            setCount(Number(count + 1))
+        }).catch(err => {
             console.log(err.response.data)
         })
     }
 
 }
 const Tooltip = styled.div`
-    display: ${({showTooltip})=> showTooltip?'flex':'none'};
+    display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
     width: auto;
     /* min-width: 169px; */
     height: 24px;
@@ -174,7 +173,7 @@ const Tooltip = styled.div`
     margin: 0;
     p{
         color: #505050;
-        display: ${({showTooltip})=> showTooltip?'flex':'none'};
+        display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
         font-family: 'Lato';
         font-style: normal;
         font-weight: 700;
@@ -235,6 +234,7 @@ const LinkContainer = styled.div`
         flex-direction: column;
         justify-content: space-between;
         padding: 20px;
+        overflow: hidden;
     }
     img{
         width:153px;
@@ -267,7 +267,7 @@ const LinkContainer = styled.div`
         div{
             width:70%;
             padding:10px;
-            overflow: hidden;
+            
         }
     }
 

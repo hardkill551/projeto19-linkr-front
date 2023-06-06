@@ -9,64 +9,63 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import { ThreeDots } from 'react-loader-spinner'
+import Trending from "../componentes/Trending";
 
 export default function UserPage() {
-    const {id} = useParams();
+    const { id } = useParams();
     const navigate = useNavigate()
     const [posts, setPosts] = useState(null);
     const token = localStorage.getItem("token");
-    const {userInfo, setUserInfo} = useContext(UserContext)
-    const {logoutBox, setLogoutBox} = useContext(LogoutContext)
-    
-    
+    const { userInfo, setUserInfo } = useContext(UserContext)
+    const { logoutBox, setLogoutBox } = useContext(LogoutContext)
+
+
     useEffect(() => {
-        if(token){
-            axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+        if (token) {
+            axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
+                headers: {
                     Authorization: `Bearer ${token}`
                 }
-            }).then(res=>{
-                setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
-            }).catch(err=>{
+            }).then(res => {
+                setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
+            }).catch(err => {
                 localStorage.clear();
                 navigate("/")
             })
         }
-        else{
+        else {
             navigate("/")
         }
-        
-        axios.get(process.env.REACT_APP_API_URL+"/posts/"+id,
+
+        axios.get(process.env.REACT_APP_API_URL + "/posts/" + id,
             { headers: { Authorization: `Bearer ${token}` } }
         )
-        .then(response => { 
-            console.log(response.data);
-            setPosts(response.data);
-        })
-        .catch(err => console.log(err))
+            .then(response => {
+                setPosts(response.data);
+            })
+            .catch(err => console.log(err))
 
-  
+
     }, [id]);
-    
-    
+
+
     if (!posts) {
         return (
             <><Header />
                 <TimelineContainer onClick={() => setLogoutBox(false)}>
-                    <ContentContainer>
-                        <Loading>
-                            <h2 data-test="message">Loading</h2>
-                            <div><ThreeDots
-                                height="10"
-                                width="80"
-                                radius="9"
-                                color="#ffffff"
-                                ariaLabel="three-dots-loading"
-                                wrapperStyle={{}}
-                                wrapperClassName=""
-                                visible="true"
-                            /></div>
-                        </Loading>
-                    </ContentContainer>
+                    <Loading>
+                        <h2 data-test="message">Loading</h2>
+                        <div><ThreeDots
+                            height="10"
+                            width="80"
+                            radius="9"
+                            color="#ffffff"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible="true"
+                        /></div>
+                    </Loading>
                 </TimelineContainer></>
         )
     }/*
@@ -93,11 +92,12 @@ export default function UserPage() {
                         <ProfilePicture src={posts.picture} alt="profile-picture" />
                         <h1>{posts.name}'s posts</h1>
                     </ProfileContainer>
-                    
+
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id}/>)}
+                        {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} id={p.id} />)}
                     </Posts>
                 </ContentContainer>
+                <Trending />
             </TimelineContainer></>
     )
 }
@@ -105,7 +105,7 @@ export default function UserPage() {
 
 const ProfileContainer = styled.div`
     display: flex;
-    height: 158px;
+    height: 177px;
     padding-left: 24px;
     align-items: center;
     h1{
