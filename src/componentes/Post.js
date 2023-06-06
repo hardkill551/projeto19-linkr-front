@@ -72,7 +72,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }
         setShowTooltip(true);
         console.log(showWhoLike)
-    }
+    } 
 
     function handleMouseLeave(){
         if(notShowTooltip){
