@@ -15,10 +15,10 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [showWhoLike, setShowWhoLike] = useState("");
     const [arrayLikes, setArrayLikes] = useState([]);
     const [notShowTooltip, setNotShowToolTip] = useState(false)
-
+    console.log(liked_by)
     useEffect(()=>{
-        setShowWhoLike("")   
-        console.log(liked_by)
+        setShowWhoLike("")    
+        
         setArrayLikes([...liked_by])
         const user = liked_by.some(obj => obj === nameUser)
         console.log(nameUser)
@@ -112,7 +112,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                 {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
                 <h5 data-test="counter">{Number(count)} likes</h5>
                 <Tooltip data-test="tooltip" showTooltip={showTooltip}>
-                    <p>{showWhoLike}</p>
+                    <p className='tooltip-text'>{showWhoLike}</p>
                 </Tooltip>
             </Likes>
             <div>
@@ -194,18 +194,19 @@ const Tooltip = styled.div`
     justify-content: center;
     padding: 5px;
     margin: 0; 
-    p{
-        color: #505050;
-        display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 11px;
-        line-height: 13px;
-        top:-17px;
-        white-space: nowrap;
-        position: relative;
-    }
+    
+    .tooltip-text {
+    color: #505050;
+    display: ${({ showTooltip }) => (showTooltip ? 'flex' : 'none')};
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 13px;
+    top: -17px;
+    white-space: nowrap;
+    position: relative;
+  }
     ::before {
         content: '';
         position: absolute;
