@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart,AiOutlineComment } from "react-icons/ai";
+import { BiRepost } from "react-icons/bi";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
+import Share from "./Share";
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by }) {
     const navigate = useNavigate();
@@ -13,6 +15,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
     const [showWhoLike, setShowWhoLike] = useState("")
+    const [showShare, setShowShare] = useState(false)
 
     useEffect(()=>{
         console.log(postId)
@@ -104,28 +107,35 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
 
     return (
+        
         <PostContainer data-test="post">
-            <Likes like={likeOn}>
-                <ProfilePicture src={picture} alt="profile-picture" />
-                {likeOn?<AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>deslike()}/>:<AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={()=>giveLike()}/>}
-                <h5 data-test="counter">{Number(count)} likes</h5>
-                <Tooltip data-test="tooltip" showTooltip={showTooltip}>
+            
+        <Icons like={likeOn}>
+            <ProfilePicture src={picture} alt="profile-picture" />
+            {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
+            <h5 data-test="counter">{Number(count)} likes</h5>
+            {/* <Tooltip data-test="tooltip" showTooltip={showTooltip}>
                     <p>{showWhoLike}</p>
-                </Tooltip>
-            </Likes>
-            <div>
-                <h2 data-test="username" onClick={()=>goToUserPage(id)}>{name}</h2>
-                <h3 data-test="description">{renderMessageWithHashtags()}</h3>
-                <LinkContainer onClick={() => redirectToUrl(link)}>
-                    <div>
-                        <h4>{linkTitle}</h4>
-                        <p>{linkDescription}</p>
-                        <a data-test="link" href={link}>{link}</a>
-                    </div>
-                    <img src={linkImage} alt="urlImage"></img>
-                </LinkContainer>
-            </div>
-        </PostContainer>
+                </Tooltip> */}
+            <AiOutlineComment />
+            <h5>10 comments</h5>
+            <BiRepost onClick={()=>setShowShare(true)}/>
+            <h5>10 re-post</h5>
+             {showShare && <Share setShowShare={setShowShare} showShare={showShare} /> }  
+        </Icons>
+        <div>
+            <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
+            <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+            <LinkContainer onClick={() => redirectToUrl(link)}>
+                <div>
+                    <h4>{linkTitle}</h4>
+                    <p>{linkDescription}</p>
+                    <a data-test="link" href={link}>{link}</a>
+                </div>
+                <img src={linkImage} alt="urlImage"></img>
+            </LinkContainer>
+        </div>
+    </PostContainer>
     );
 
     function deslike(){
@@ -199,7 +209,7 @@ const HashtagLink = styled(Link)`
     font-weight: bold;
     text-decoration: none;
 `;
-const Likes = styled.div`
+const Icons = styled.div`
 position: relative;
 display:flex;
 flex-direction:column;
