@@ -52,7 +52,7 @@ justify-content: center;
 position: fixed;
 top: 0px;
 left: 0px;
-z-index:10000;
+z-index: 1000;
 `
 export const Text = styled.h1`
 font-family: 'Lato';
@@ -63,6 +63,7 @@ line-height: 41px;
 color: #FFFFFF;
 width: 70%;
 text-align: center;
+padding: 0px !important;
 
 
 `
