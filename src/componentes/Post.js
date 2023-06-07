@@ -14,7 +14,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
     const [showWhoLike, setShowWhoLike] = useState("");
-    const [arrayLikes, setArrayLikes] = useState([]);
     const [notShowTooltip, setNotShowToolTip] = useState(false)
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
@@ -22,7 +21,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
     useEffect(() => {
         setShowWhoLike("")
-        setArrayLikes([...liked_by])
         const user = liked_by.some(obj => obj === nameUser)
         const newArray = liked_by.filter(obj => obj !== nameUser);
 

@@ -20,8 +20,10 @@ export default function TimelinePage() {
     const [message, setMessage] = useState("");
     const [disabled, setDisabled] = useState(false);
     const [buttonText, setButtonText] = useState("Publishing");
-    const { userInfo, setUserInfo } = useContext(UserContext)
-    const { logoutBox, setLogoutBox } = useContext(LogoutContext)
+    const { userInfo, setUserInfo } = useContext(UserContext);
+    const { logoutBox, setLogoutBox } = useContext(LogoutContext);
+    const [haveFollowers, setHaveFollowers] = useState(false);
+    
 
     useEffect(() => {
         if (token) {
@@ -39,15 +41,25 @@ export default function TimelinePage() {
         else {
             navigate("/")
         }
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+            .then((res) => {
+                if (res.data.length > 0) {
+                    setHaveFollowers(true)
+                    const request = api.get("/posts", config);
+                    request.then(response => {
+                        setPosts(response.data)
 
-        const request = api.get("/posts",
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        request.then(response => { setPosts(response.data) });
-        request.catch(err => {
-            setError(true);
-        });
+                    });
+                    request.catch(err => {
+                        setError(true);
+                    });
+                }else setPosts([])
+            }).catch(err => {
+                console.log(err.message);
+            });
 
     }, [posts])
 
@@ -136,7 +148,7 @@ export default function TimelinePage() {
                         </div>
                     </PublishingContainer>
                     <Posts posts={posts}>
-                        {posts.map(p => <Post key={p.id}
+                    {posts.map(p => <Post key={p.id}
                             like_count={p.like_count}
                             message={p.message}
                             name={p.name}
@@ -152,7 +164,7 @@ export default function TimelinePage() {
                             commentsCount={p.commentsCount}
                             commentsData={p.commentsData}
                         />)}
-                        <p data-test="message">There are no posts yet</p>
+                        {haveFollowers ? <p data-test="message">No posts found from your friends</p> : <p data-test="message">You don't follow anyone yet. Search for new friends!</p>}
                     </Posts>
 
                 </ContentContainer>
