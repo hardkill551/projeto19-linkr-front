@@ -23,7 +23,7 @@ export default function TimelinePage() {
     const { userInfo, setUserInfo } = useContext(UserContext);
     const { logoutBox, setLogoutBox } = useContext(LogoutContext);
     const [haveFollowers, setHaveFollowers] = useState(false);
-    const [followers, setFollowers] = useState([])
+    
 
     useEffect(() => {
         if (token) {
@@ -47,10 +47,8 @@ export default function TimelinePage() {
         };
         axios.get(process.env.REACT_APP_API_URL + "/followers", config)
             .then((res) => {
-                console.log(res.data)
                 if (res.data.length > 0) {
                     setHaveFollowers(true)
-                    setFollowers(res.data)
                     const request = api.get("/posts", config);
                     request.then(response => {
                         setPosts(response.data)
@@ -59,8 +57,10 @@ export default function TimelinePage() {
                     request.catch(err => {
                         setError(true);
                     });
-                }
-            })
+                }else setPosts([])
+            }).catch(err => {
+                console.log(err.message);
+            });
 
     }, [posts])
 

@@ -38,7 +38,20 @@ export default function UserPage() {
         else {
             navigate("/")
         }
-
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+            .then((res) => {
+                console.log(res.data)
+                if (res.data.length > 0) {
+                    const follow = res.data.some(obj => obj.followedId === Number(id))
+                    if(follow) setButtonFollow("Unfollow")
+                    else setButtonFollow("Follow")
+                }
+            }).catch(err => {
+                console.log(err.message);
+            });
         axios.get(process.env.REACT_APP_API_URL + "/posts/" + id,
             { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -52,23 +65,20 @@ export default function UserPage() {
 
     function follow(){
         setAble(true)
-        console.log("chega aqui")
         const body = {followedId: id}
         const config = { headers: { Authorization: `Bearer ${token}` } }
         axios.post(process.env.REACT_APP_API_URL + "/followers", body, config)
             .then((response) =>{
                 setAble(false)
-                console.log("ok")
                 setButtonFollow("Unfollow")
             }).catch(err => {
                 setAble(false)
-                console.log(err)
+                alert(err.response)
             })
     }
 
     function unfollow() {
         setAble(true)
-        console.log("chega no delete");
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
@@ -76,16 +86,14 @@ export default function UserPage() {
         axios.delete(process.env.REACT_APP_API_URL + "/followers/"+id, config)
             .then((response) => {
                 setAble(false)
-                console.log("ok deletou");
                 setButtonFollow("Follow");
             })
             .catch(err => {
                 setAble(false)
-                console.log(err)
+                alert(err.response)
             })
     }
     
-    console.log(buttonFollow)
     if (!posts) {
         return (
             <><Header />
@@ -119,8 +127,8 @@ export default function UserPage() {
                             </ProfileContainer>
                             {
                                 buttonFollow==="Follow"?
-                                <ButtonFollow disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</ButtonFollow>:
-                                <ButtonUnfollow disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Unfollow</ButtonUnfollow>
+                                <ButtonFollow data-test="follow-btn" disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</ButtonFollow>:
+                                <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Unfollow</ButtonUnfollow>
                             }
                         </UserContainer>
                         <h1>There are no posts yet</h1>
@@ -142,8 +150,8 @@ export default function UserPage() {
                         </ProfileContainer>
                         {
                             buttonFollow==="Follow"?
-                            <ButtonFollow disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonFollow>:
-                            <ButtonUnfollow disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonUnfollow>
+                            <ButtonFollow data-test="follow-btn" disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonFollow>:
+                            <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonUnfollow>
                         }
                     </UserContainer>
 
