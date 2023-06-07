@@ -20,8 +20,10 @@ export default function TimelinePage() {
     const [message, setMessage] = useState("");
     const [disabled, setDisabled] = useState(false);
     const [buttonText, setButtonText] = useState("Publishing");
-    const { userInfo, setUserInfo } = useContext(UserContext)
-    const { logoutBox, setLogoutBox } = useContext(LogoutContext)
+    const { userInfo, setUserInfo } = useContext(UserContext);
+    const { logoutBox, setLogoutBox } = useContext(LogoutContext);
+    const [haveFollowers, setHaveFollowers] = useState(false);
+    const [followers, setFollowers] = useState([])
 
     useEffect(() => {
         if (token) {
@@ -30,7 +32,7 @@ export default function TimelinePage() {
                     Authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                console.log(res.data) 
+                //console.log(res.data) 
                 //setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
             }).catch(err => {
                 localStorage.clear();
@@ -40,15 +42,25 @@ export default function TimelinePage() {
         else {
             navigate("/")
         }
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+            .then((res) => {
+                console.log(res.data)
+                if (res.data.length > 0) {
+                    setHaveFollowers(true)
+                    setFollowers(res.data)
+                    const request = api.get("/posts", config);
+                    request.then(response => {
+                        setPosts(response.data)
 
-        const request = api.get("/posts",
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        request.then(response => { setPosts(response.data) });
-        request.catch(err => {
-            setError(true);
-        });
+                    });
+                    request.catch(err => {
+                        setError(true);
+                    });
+                }
+            })
 
     }, [posts])
 
@@ -137,8 +149,8 @@ export default function TimelinePage() {
                         </div>
                     </PublishingContainer>
                     <Posts posts={posts}>
-                        {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} liked_by={p.liked_by}/>)}
-                        <p data-test="message">There are no posts yet</p>
+                        {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} liked_by={p.liked_by} />)}
+                        {haveFollowers ? <p data-test="message">No posts found from your friends</p> : <p data-test="message">You don't follow anyone yet. Search for new friends!</p>}
                     </Posts>
 
                 </ContentContainer>

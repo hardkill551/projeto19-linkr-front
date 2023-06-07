@@ -18,6 +18,8 @@ export default function UserPage() {
     const token = localStorage.getItem("token");
     const { userInfo, setUserInfo } = useContext(UserContext)
     const { logoutBox, setLogoutBox } = useContext(LogoutContext)
+    const [buttonFollow, setButtonFollow] = useState("Follow")
+    const [able, setAble] = useState(false)
 
     useEffect(() => {
         
@@ -49,9 +51,41 @@ export default function UserPage() {
     }, [id]);
 
     function follow(){
+        setAble(true)
         console.log("chega aqui")
+        const body = {followedId: id}
+        const config = { headers: { Authorization: `Bearer ${token}` } }
+        axios.post(process.env.REACT_APP_API_URL + "/followers", body, config)
+            .then((response) =>{
+                setAble(false)
+                console.log("ok")
+                setButtonFollow("Unfollow")
+            }).catch(err => {
+                setAble(false)
+                console.log(err)
+            })
+    }
+
+    function unfollow() {
+        setAble(true)
+        console.log("chega no delete");
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+    
+        axios.delete(process.env.REACT_APP_API_URL + "/followers/"+id, config)
+            .then((response) => {
+                setAble(false)
+                console.log("ok deletou");
+                setButtonFollow("Follow");
+            })
+            .catch(err => {
+                setAble(false)
+                console.log(err)
+            })
     }
     
+    console.log(buttonFollow)
     if (!posts) {
         return (
             <><Header />
@@ -83,7 +117,11 @@ export default function UserPage() {
                                 <ProfilePicture src={posts.picture} alt="profile-picture" />
                                 <h1>{posts.name}'s posts</h1>
                             </ProfileContainer>
-                            <button onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</button>
+                            {
+                                buttonFollow==="Follow"?
+                                <ButtonFollow disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</ButtonFollow>:
+                                <ButtonUnfollow disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Unfollow</ButtonUnfollow>
+                            }
                         </UserContainer>
                         <h1>There are no posts yet</h1>
                     </ContentContainer>
@@ -102,7 +140,11 @@ export default function UserPage() {
                             <ProfilePicture src={posts.picture} alt="profile-picture" />
                             <h1>{posts.name}'s posts</h1>
                         </ProfileContainer>
-                        <button onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</button>
+                        {
+                            buttonFollow==="Follow"?
+                            <ButtonFollow disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonFollow>:
+                            <ButtonUnfollow disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonUnfollow>
+                        }
                     </UserContainer>
 
                     <Posts posts={posts}>
@@ -133,18 +175,42 @@ const UserContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100vh;
-    button{
-        width: 112px;
-        height: 31px;
-        background: #1877F2;
-        border-radius: 5px;
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 14px;
-        line-height: 17px;
-        color: #FFFFFF;
-        border: none;
-        cursor: pointer;
+`
+
+const ButtonFollow = styled.button`
+    width: 112px;
+    height: 31px;
+    background: #1877F2;
+    border-radius: 5px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    :disabled{
+        opacity: 0.7;
+        cursor:default;
+    }
+`
+
+const ButtonUnfollow = styled.button`
+    width: 112px;
+    height: 31px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: #1877F2;
+    border: none;
+    cursor: pointer;
+    :disabled{
+        opacity: 0.7;
+        cursor:default;
     }
 `
