@@ -7,7 +7,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by }) {
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData }) {
     const navigate = useNavigate();
     const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -17,19 +17,15 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [arrayLikes, setArrayLikes] = useState([]);
     const [notShowTooltip, setNotShowToolTip] = useState(false)
     const [showComments, setShowComments] = useState(false);
+    const [comment, setComment] = useState("");
+    const token = localStorage.getItem("token")
 
     useEffect(() => {
         setShowWhoLike("")
-        console.log(liked_by)
         setArrayLikes([...liked_by])
         const user = liked_by.some(obj => obj === nameUser)
-        console.log(nameUser)
-        console.log([user]);
-
-
         const newArray = liked_by.filter(obj => obj !== nameUser);
 
-        console.log("novo array:" + newArray)
         if (liked_by.length === 0) {
             setNotShowToolTip(true)
         } else if (liked_by.length === 1 && user) { //caso em que o unico like é meu
@@ -45,7 +41,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         } else if (liked_by.length >= 3 && !user) {
             setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length - 2} pessoas`)
         }
-        const token = localStorage.getItem("token")
+
         axios.post(process.env.REACT_APP_API_URL + "/likesCheck", { postId }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -74,7 +70,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             return;
         }
         setShowTooltip(true);
-        console.log(showWhoLike)
     }
 
     function handleMouseLeave() {
@@ -116,6 +111,28 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }
     }
 
+    function createComment(postId) {
+        if (comment.length > 120) {
+            return alert("Comment can not be longer than 120 characters.");
+        }
+
+        const obj = {
+            comment,
+            postId
+        }
+
+        axios.post(process.env.REACT_APP_API_URL + "/comments", obj, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
+            console.log("comentario criado");
+            setComment("");
+        }).catch(err => {
+            console.log(err.response.data)
+        })
+    }
+
     return (
         <Container showComments={showComments}>
             <PostContainer data-test="post">
@@ -126,8 +143,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     <Tooltip data-test="tooltip" showTooltip={showTooltip}>
                         <p>{showWhoLike}</p>
                     </Tooltip>
-                    <AiOutlineComment onClick={showCommentsContainer} />
-                    <h5>10 comments</h5>
+                    <AiOutlineComment data-test="comment-btn" onClick={showCommentsContainer} />
+                    <h5 data-test="comment-counter">{commentsCount} comments</h5>
                 </Icons>
                 <div>
                     <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
@@ -142,41 +159,25 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     </LinkContainer>
                 </div>
             </PostContainer>
-            <CommentsContainer showComments={showComments}>
-                <Comment>
-                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
-                    <div className="comment-content">
-                        <div className="comment-author">
-                            <h2>João Avatares</h2>
-                            <h3>• following</h3>
-                        </div>
-                        <h4>Adorei esse post, ajuda muito! Mudou a minha vida saber disso...... Adorei esse post, ajuda muito! Mudou a minha vida saber disso......</h4>
-                    </div>
-                </Comment>
-                <Comment>
-                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
-                    <div className="comment-content">
-                        <div className="comment-author">
-                            <h2>João Avatares</h2>
-                            <h3>• following</h3>
-                        </div>
-                        <h4>Adorei esse post, ajuda muito! Mudou a minha vida saber disso...... Adorei esse post, ajuda muito! Mudou a minha vida saber disso...... </h4>
-                    </div>
-                </Comment>
-                <Comment>
-                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
-                    <div className="comment-content">
-                        <div className="comment-author">
-                            <h2>João Avatares</h2>
-                            <h3>• following</h3>
-                        </div>
-                        <h4> Adorei esse post, ajuda muito! Mudou a minha vida saber disso......</h4>
-                    </div>
-                </Comment>
+            <CommentsContainer showComments={showComments} data-test="comment-box">
+                <Comments>
+                    {commentsData !== null && commentsData.reverse().map(c => (
+                        <Comment data-test="comment">
+                            <img src={c.pictureAuthor} />
+                            <div className="comment-content">
+                                <div className="comment-author">
+                                    <h2>{c.commentAuthor}</h2>
+                                    <h3>• following</h3>
+                                </div>
+                                <h4>{c.comment}</h4>
+                            </div>
+                        </Comment>
+                    ))}
+                </Comments>
                 <CommentInput>
-                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
-                    <input type="text" placeholder="write a comment..."></input>
-                    <BsSend />
+                    <img src={userInfo.picture} />
+                    <input data-test="comment-input" type="text" placeholder="write a comment..." value={comment} onChange={e => setComment(e.target.value)}></input>
+                    <BsSend data-test="comment-submit" onClick={() => createComment(postId)} />
                 </CommentInput>
             </CommentsContainer>
         </Container>
@@ -216,7 +217,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }).then(res => {
             setLikeOn(true)
             setCount(Number(count + 1))
-            console.log(arrayLikes)
             if (Number(count + 1) === 1) {
                 setNotShowToolTip(false) //não tinha like e agora tem e o unico q tem é seu! Então pode mostrar
                 setShowWhoLike("Você")
@@ -226,19 +226,16 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                 setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length - 1} pessoas`)
             }
         }).catch(err => {
-            console.log("é aqui")
             console.log(err)
         })
     }
 
 }
-
 const CommentInput = styled.div`
         display:flex;
         gap:18px;
         padding: 14px 0px;
-        margin-bottom: 10px;
-        
+        position: relative;
     img{
         width:39px;
         height: 39px;
@@ -253,7 +250,7 @@ const CommentInput = styled.div`
         color:#ACACAC;
         border:none;
         border-radius: 8px;
-        position:relative;
+        
         &::placeholder{
             font-family: 'Lato';
             font-style: italic;
@@ -268,11 +265,16 @@ const CommentInput = styled.div`
     cursor: pointer;
     color: #ffffff;
     position:absolute;
-    right: 45px;
-    bottom:23px;
+    right: 5%;
+    bottom:38%;
 }
 `
+const Comments = styled.div`
+    max-height: 240px;
+    overflow-y: hidden;
+    overflow-y: scroll;
 
+ `
 const Comment = styled.div`
         font-family: 'Lato';
         font-size: 14px;
@@ -282,7 +284,7 @@ const Comment = styled.div`
         align-items: center;
         gap:18px;
         border-bottom: 1px solid #353535;
-        padding: 16px 0px;
+        padding: 12px 0px;
     img{
         width:39px;
         height: 39px;
@@ -315,7 +317,6 @@ const Container = styled.div`
    display:flex;
    flex-direction: column;
    position: relative;
-
    @media (max-width:611px){
         width:100%;
     }
@@ -338,6 +339,7 @@ const CommentsContainer = styled.div`
         padding: 16px 10px;
     }
 `
+
 const Tooltip = styled.div`
     display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
     width: auto;
@@ -398,6 +400,7 @@ svg{
 h5{
     color:white;
     font-size:11px;
+
     font-family: 'Lato';
     text-align: center;
 }
@@ -486,6 +489,7 @@ const PostContainer = styled.div`
     height: 276px;
     background-color: #171717;
     border-radius: 16px;
+    margin-bottom:29px;
     padding: 16px 14px;
     display: flex;
     justify-content: flex-start;
@@ -522,7 +526,6 @@ const PostContainer = styled.div`
         max-width:85%;
         } 
     }
-    
 `
 
 const ProfilePicture = styled.img`
