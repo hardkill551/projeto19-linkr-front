@@ -21,8 +21,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
     const token = localStorage.getItem("token")
-
-    useEffect(() => {
+    
+    useEffect(() => { 
         setShowWhoLike("")
         const user = liked_by.some(obj => obj === nameUser)
         const newArray = liked_by.filter(obj => obj !== nameUser);

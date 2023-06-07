@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
+
 const token = localStorage.getItem("token");
 
 
@@ -20,6 +21,8 @@ export default function Header() {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useContext(UserContext);
   const [users, setUsers] = useState([])
+  const [follows, setFollows] = useState([])
+
 
   function SearchUsers(e) {
     setFindActive(true)
@@ -29,7 +32,9 @@ export default function Header() {
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
-      request.then(response => { setUsers(response.data) });
+      request.then(response => { 
+        setUsers(response.data) 
+      });
       request.catch(err => console.log(err))
     } else {
       setFindActive(false)
@@ -60,6 +65,7 @@ export default function Header() {
             <User data-test="user-search" onClick={() => goToUserPage(user.id)} key={user.id}>
               <img src={user.picture} alt="user-picture" />
               <p>{user.name}</p>
+              <Following>{Number(user.is_followed)===1&&"• following"}</Following>
             </User>
           ))}
         </FindUsers>
@@ -114,6 +120,15 @@ export default function Header() {
     navigate("/");
   }
 }
+const Following = styled.div`
+  margin-left: 7px;
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 23px;
+  color: #C5C5C5;
+`
 
 const Centralizer = styled.div`
   position: absolute;
