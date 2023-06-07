@@ -126,7 +126,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                 Authorization: `Bearer ${token}`
             }
         }).then(res => {
-            console.log("comentario criado");
             setComment("");
         }).catch(err => {
             console.log(err.response.data)
