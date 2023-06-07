@@ -161,7 +161,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             </PostContainer>
             <CommentsContainer showComments={showComments} data-test="comment-box">
                 <Comments>
-                    {commentsData !== null && commentsData.map(c => (
+                    {commentsData && commentsData.map(c => (
                         <Comment data-test="comment">
                             <img src={c.pictureAuthor} />
                             <div className="comment-content">
