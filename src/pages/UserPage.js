@@ -43,7 +43,6 @@ export default function UserPage() {
         };
         axios.get(process.env.REACT_APP_API_URL + "/followers", config)
             .then((res) => {
-                console.log(res.data)
                 if (res.data.length > 0) {
                     const follow = res.data.some(obj => obj.followedId === Number(id))
                     if(follow) setButtonFollow("Unfollow")
@@ -156,7 +155,19 @@ export default function UserPage() {
                     </UserContainer>
 
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} like_count={p.like_count} nameUser={userInfo.name} liked_by={p.liked_by}
+                        {posts.postsUser.map(p => <Post 
+                            key={p.id} 
+                            message={p.message} 
+                            name={posts.name} 
+                            picture={p.picture} 
+                            link={p.link} 
+                            linkTitle={p.linkTitle} 
+                            linkImage={p.linkImage} 
+                            linkDescription={p.linkDescription} 
+                            postId={p.id} 
+                            like_count={p.like_count} 
+                            nameUser={userInfo.name} 
+                            liked_by={p.liked_by}
                             commentsCount={p.commentsCount}
                             commentsData={p.commentsData} />)}
                     </Posts>
