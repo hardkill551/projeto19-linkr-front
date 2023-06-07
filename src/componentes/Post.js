@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineComment } from "react-icons/ai";
+import { BsSend } from "react-icons/bs";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
@@ -12,7 +13,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [likeOn, setLikeOn] = useState(false)
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
-    const [showWhoLike, setShowWhoLike] = useState("")
+    const [showWhoLike, setShowWhoLike] = useState("");
+    const [showComments, setShowComments] = useState(false);
 
     useEffect(() => {
 
@@ -101,30 +103,79 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         return message;
     }
 
+    function showCommentsContainer() {
+        if (showComments) {
+            setShowComments(false);
+        } else {
+            setShowComments(true);
+        }
+    }
+
 
     return (
-        <PostContainer data-test="post">
-            <Likes like={likeOn}>
-                <ProfilePicture src={picture} alt="profile-picture" />
-                {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
-                <h5 data-test="counter">{Number(count)} likes</h5>
-                <Tooltip data-test="tooltip" showTooltip={showTooltip}>
-                    <p>{showWhoLike}</p>
-                </Tooltip>
-            </Likes>
-            <div>
-                <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
-                <h3 data-test="description">{renderMessageWithHashtags()}</h3>
-                <LinkContainer onClick={() => redirectToUrl(link)}>
-                    <div>
-                        <h4>{linkTitle}</h4>
-                        <p>{linkDescription}</p>
-                        <a data-test="link" href={link}>{link}</a>
+        <Container showComments={showComments}>
+            <PostContainer data-test="post">
+                <Icons like={likeOn}>
+                    <ProfilePicture src={picture} alt="profile-picture" />
+                    {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" className="like" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
+                    <h5 data-test="counter">{Number(count)} likes</h5>
+                    {/* <Tooltip data-test="tooltip" showTooltip={showTooltip}>
+                            <p>{showWhoLike}</p>
+                        </Tooltip> */}
+                    <AiOutlineComment onClick={showCommentsContainer} />
+                    <h5>10 comments</h5>
+                </Icons>
+                <div>
+                    <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
+                    <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                    <LinkContainer onClick={() => redirectToUrl(link)}>
+                        <div>
+                            <h4>{linkTitle}</h4>
+                            <p>{linkDescription}</p>
+                            <a data-test="link" href={link}>{link}</a>
+                        </div>
+                        <img src={linkImage} alt="urlImage"></img>
+                    </LinkContainer>
+                </div>
+            </PostContainer>
+            <CommentsContainer showComments={showComments}>
+                <Comment>
+                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
+                    <div className="comment-content">
+                        <div className="comment-author">
+                            <h2>João Avatares</h2>
+                            <h3>• following</h3>
+                        </div>
+                        <h4>Adorei esse post, ajuda muito! Mudou a minha vida saber disso...... Adorei esse post, ajuda muito! Mudou a minha vida saber disso......</h4>
                     </div>
-                    <img src={linkImage} alt="urlImage"></img>
-                </LinkContainer>
-            </div>
-        </PostContainer>
+                </Comment>
+                <Comment>
+                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
+                    <div className="comment-content">
+                        <div className="comment-author">
+                            <h2>João Avatares</h2>
+                            <h3>• following</h3>
+                        </div>
+                        <h4>Adorei esse post, ajuda muito! Mudou a minha vida saber disso...... Adorei esse post, ajuda muito! Mudou a minha vida saber disso...... </h4>
+                    </div>
+                </Comment>
+                <Comment>
+                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
+                    <div className="comment-content">
+                        <div className="comment-author">
+                            <h2>João Avatares</h2>
+                            <h3>• following</h3>
+                        </div>
+                        <h4> Adorei esse post, ajuda muito! Mudou a minha vida saber disso......</h4>
+                    </div>
+                </Comment>
+                <CommentInput>
+                    <img src="https://img.freepik.com/fotos-gratis/close-up-de-uma-flor-roxa_181624-25863.jpg" />
+                    <input type="text" placeholder="write a comment..."></input>
+                    <BsSend />
+                </CommentInput>
+            </CommentsContainer>
+        </Container>
     );
 
     function deslike() {
@@ -156,6 +207,112 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     }
 
 }
+
+const CommentInput = styled.div`
+        display:flex;
+        gap:18px;
+        padding: 14px 0px;
+        margin-bottom: 10px;
+        
+    img{
+        width:39px;
+        height: 39px;
+        border-radius: 26.5px;
+        object-fit: cover;
+        background-color: #EFEFEF;
+    }
+    input{
+        width: 510px;
+        height: 39px;
+        background-color: #252525;
+        color:#ACACAC;
+        border:none;
+        border-radius: 8px;
+        position:relative;
+        &::placeholder{
+            font-family: 'Lato';
+            font-style: italic;
+            color:#575757;
+            font-size:14px;
+            line-height:17px;
+            padding:8px 12px;
+            }
+    }
+    svg{
+    font-size:15px;
+    cursor: pointer;
+    color: #ffffff;
+    position:absolute;
+    right: 45px;
+    bottom:23px;
+}
+`
+
+const Comment = styled.div`
+        font-family: 'Lato';
+        font-size: 14px;
+        line-height: 17px;
+        display:flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap:18px;
+        border-bottom: 1px solid #353535;
+        padding: 16px 0px;
+    img{
+        width:39px;
+        height: 39px;
+        border-radius: 26.5px;
+        object-fit: cover;
+        background-color: #EFEFEF;
+    }
+    h2{
+        font-weight: 700;
+        color: #F3F3F3;
+        margin-right: 4px;
+    }
+    h3{
+        font-weight: 400;
+        color: #565656;
+    }
+    h4{
+        font-weight: 400;
+        color: #ACACAC;
+        height: 34px;
+    }
+    .comment-author{
+        display:flex;
+        margin-bottom:3px;
+    }
+`
+const Container = styled.div`
+   margin-bottom:29px;
+   height: ${({ showComments }) => showComments ? '595px' : '100%'};
+   display:flex;
+   flex-direction: column;
+   position: relative;
+
+   @media (max-width:611px){
+        width:100%;
+    }
+`
+
+const CommentsContainer = styled.div`
+    display: ${({ showComments }) => showComments ? 'flex' : 'none'};
+    flex-direction: column;
+    width:611px;
+    max-height: 375px;
+    background-color: #1E1E1E;
+    border-radius: 16px;
+    position: absolute;
+    left: auto;
+    top:220px;
+    padding: 50px 14px 16px 14px;
+    @media (max-width:611px){
+        width:100%;
+        border-radius: 0px;
+        padding: 16px 10px;
+    }
+`
 const Tooltip = styled.div`
     display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
     width: auto;
@@ -198,7 +355,7 @@ const HashtagLink = styled(Link)`
     font-weight: bold;
     text-decoration: none;
 `;
-const Likes = styled.div`
+const Icons = styled.div`
 position: relative;
 display:flex;
 flex-direction:column;
@@ -208,14 +365,16 @@ svg{
     font-size:30px;
     margin-top:15px;
     margin-bottom:5px;
-    color:${(props) => props.like ? "#AC0000" : "white"};
     cursor: pointer;
+}
+.like{
+    color:${(props) => props.like ? "#AC0000" : "white"};
 }
 h5{
     color:white;
-    font-size:14px;
-
+    font-size:11px;
     font-family: 'Lato';
+    text-align: center;
 }
 
 `
@@ -302,11 +461,11 @@ const PostContainer = styled.div`
     height: 276px;
     background-color: #171717;
     border-radius: 16px;
-    margin-bottom:29px;
-    padding: 16px 22px;
+    padding: 16px 14px;
     display: flex;
     justify-content: flex-start;
-    gap:18px;
+    gap:14px;
+    z-index:1;
     h2 {
         font-family: 'Lato';
         font-weight: 400;
@@ -338,6 +497,7 @@ const PostContainer = styled.div`
         max-width:85%;
         } 
     }
+    
 `
 
 const ProfilePicture = styled.img`
