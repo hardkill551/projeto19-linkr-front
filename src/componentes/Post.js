@@ -13,32 +13,25 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [count, setCount] = useState(Number(like_count))
     const [showTooltip, setShowTooltip] = useState(false);
     const [showWhoLike, setShowWhoLike] = useState("");
-    const [arrayLikes, setArrayLikes] = useState([]);
     const [notShowTooltip, setNotShowToolTip] = useState(false)
-    console.log(liked_by)
-    useEffect(()=>{
-        setShowWhoLike("")    
-        
-        setArrayLikes([...liked_by])
-        const user = liked_by.some(obj => obj === nameUser)
-        console.log(nameUser)
-        console.log([user])
-        
-        const newArray = liked_by.filter(obj => obj !== nameUser);
 
-        console.log("novo array:"+ newArray)
+
+    useEffect(()=>{  
+        const user = liked_by.some(obj => obj === userInfo.name)        
+        const newArray = liked_by.filter(obj => obj !== userInfo.name);
+
         if(liked_by.length ===0){
             setNotShowToolTip(true)
-        }else if(liked_by.length === 1 && user){ //caso em que o unico like é meu
+        }else if(liked_by.length === 1 && user){
             setShowWhoLike("Você")
-        }else if(liked_by.length === 1 && !user){ //caso em q o unico like q tem nao fui eu quem dei
+        }else if(liked_by.length === 1 && !user){
             setShowWhoLike(liked_by[0])
-        }else if(liked_by.length === 2 && user){ //caso em qque tem 2 likes e um é meu
+        }else if(liked_by.length === 2 && user){
             setShowWhoLike(`Você e ${newArray[0]}`)
-        }else if(liked_by.length === 2 && !user){ //caso em que tem dois likes e nenhum é meu
+        }else if(liked_by.length === 2 && !user){
             setShowWhoLike(`${liked_by[0]} e ${liked_by[1]}`)
         }else if(liked_by.length >= 3 && user){
-            setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length -2} pessoas`)//caso em que tem mais de dois likes e um é meu
+            setShowWhoLike(`Você, ${liked_by[0]} e outras ${liked_by.length -2} pessoas`)
         }else if(liked_by.length >= 3 && !user){
             setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length -2} pessoas`)
         }
@@ -71,7 +64,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             return;
         }
         setShowTooltip(true);
-        console.log(showWhoLike)
     } 
 
     function handleMouseLeave(){
@@ -164,9 +156,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }).then(res => {
             setLikeOn(true)
             setCount(Number(count+1))
-            console.log(arrayLikes) 
             if(Number(count+1) === 1){
-                setNotShowToolTip(false) //não tinha like e agora tem e o unico q tem é seu! Então pode mostrar
+                setNotShowToolTip(false)
                 setShowWhoLike("Você")
             }else if((Number(count+1) === 2)){
                 setShowWhoLike(`Você e ${liked_by[0]}`)

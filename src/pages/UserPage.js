@@ -19,8 +19,8 @@ export default function UserPage() {
     const { userInfo, setUserInfo } = useContext(UserContext)
     const { logoutBox, setLogoutBox } = useContext(LogoutContext)
 
-
     useEffect(() => {
+        
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
                 headers: {
@@ -48,7 +48,10 @@ export default function UserPage() {
 
     }, [id]);
 
-
+    function follow(){
+        console.log("chega aqui")
+    }
+    
     if (!posts) {
         return (
             <><Header />
@@ -69,6 +72,27 @@ export default function UserPage() {
                 </TimelineContainer></>
         )
     }
+    if(posts && posts.postsUser.length === 0){
+        return (
+            <>
+                <Header/>
+                <TimelineContainer onClick={()=>setLogoutBox(false)}>
+                    <ContentContainer>
+                        <UserContainer>
+                            <ProfileContainer>
+                                <ProfilePicture src={posts.picture} alt="profile-picture" />
+                                <h1>{posts.name}'s posts</h1>
+                            </ProfileContainer>
+                            <button onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</button>
+                        </UserContainer>
+                        <h1>There are no posts yet</h1>
+                    </ContentContainer>
+                    <Trending />
+                </TimelineContainer>
+            </>
+        )
+    }
+    
     return (
         <><Header />
             <TimelineContainer onClick={() => setLogoutBox(false)}>
@@ -78,7 +102,7 @@ export default function UserPage() {
                             <ProfilePicture src={posts.picture} alt="profile-picture" />
                             <h1>{posts.name}'s posts</h1>
                         </ProfileContainer>
-                        <button>Follow</button>
+                        <button onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</button>
                     </UserContainer>
 
                     <Posts posts={posts}>
