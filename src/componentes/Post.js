@@ -140,7 +140,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" className="like" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
                     <h5 data-test="counter">{Number(count)} likes</h5>
                     <Tooltip data-test="tooltip" showTooltip={showTooltip}>
-                        <p>{showWhoLike}</p>
+                        <p className='tooltip-text'>{showWhoLike}</p>
                     </Tooltip>
                     <AiOutlineComment data-test="comment-btn" onClick={showCommentsContainer} />
                     <h5 data-test="comment-counter">{commentsCount} comments</h5>
@@ -353,18 +353,19 @@ const Tooltip = styled.div`
     justify-content: center;
     padding: 5px;
     margin: 0; 
-    p{
-        color: #505050;
-        display: ${({ showTooltip }) => showTooltip ? 'flex' : 'none'};
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 11px;
-        line-height: 13px;
-        top:-17px;
-        white-space: nowrap;
-        position: relative;
-    }
+    
+    .tooltip-text {
+    color: #505050;
+    display: ${({ showTooltip }) => (showTooltip ? 'flex' : 'none')};
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 13px;
+    top: -17px;
+    white-space: nowrap;
+    position: relative;
+  }
     ::before {
         content: '';
         position: absolute;

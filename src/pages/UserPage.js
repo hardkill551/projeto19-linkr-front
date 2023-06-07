@@ -68,30 +68,18 @@ export default function UserPage() {
                     </Loading>
                 </TimelineContainer></>
         )
-    }/*
-    if(posts){
-        if(posts.postsUser.length === 0){
-        return (
-            <><Header />
-                <TimelineContainer onClick={() => setLogoutBox(false)}>
-                    <ContentContainer>
-                        <h1>{posts.name}</h1>
-                       <Posts>
-                        <p>There are no posts yet</p>
-                       </Posts>
-                    </ContentContainer>
-                </TimelineContainer></>
-        )
-        }
-    }*/
+    }
     return (
         <><Header />
             <TimelineContainer onClick={() => setLogoutBox(false)}>
                 <ContentContainer>
-                    <ProfileContainer>
-                        <ProfilePicture src={posts.picture} alt="profile-picture" />
-                        <h1>{posts.name}'s posts</h1>
-                    </ProfileContainer>
+                    <UserContainer>
+                        <ProfileContainer>
+                            <ProfilePicture src={posts.picture} alt="profile-picture" />
+                            <h1>{posts.name}'s posts</h1>
+                        </ProfileContainer>
+                        <button>Follow</button>
+                    </UserContainer>
 
                     <Posts posts={posts}>
                         {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} like_count={p.like_count} nameUser={userInfo.name} liked_by={p.liked_by}
@@ -116,5 +104,25 @@ const ProfileContainer = styled.div`
     img{
         margin-right: 18px;
         margin-bottom: 5px;
+    }
+`
+const UserContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vh;
+    button{
+        width: 112px;
+        height: 31px;
+        background: #1877F2;
+        border-radius: 5px;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 17px;
+        color: #FFFFFF;
+        border: none;
+        cursor: pointer;
     }
 `
