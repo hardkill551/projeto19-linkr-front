@@ -7,7 +7,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData }) {
+export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
     const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -159,12 +159,13 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             <CommentsContainer showComments={showComments} data-test="comment-box">
                 <Comments>
                     {commentsData && commentsData.map(c => (
+
                         <Comment data-test="comment">
                             <img src={c.pictureAuthor} />
                             <div className="comment-content">
                                 <div className="comment-author">
                                     <h2>{c.commentAuthor}</h2>
-                                    <h3>• following</h3>
+                                    <h3>{c.commentAuthorId === userId ? "• post's author" : (following.some(obj => obj.followedId === c.commentAuthorId) ? "• following" : "")}</h3>
                                 </div>
                                 <h4>{c.comment}</h4>
                             </div>

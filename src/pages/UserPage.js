@@ -19,10 +19,11 @@ export default function UserPage() {
     const { userInfo, setUserInfo } = useContext(UserContext)
     const { logoutBox, setLogoutBox } = useContext(LogoutContext)
     const [buttonFollow, setButtonFollow] = useState("Follow")
-    const [able, setAble] = useState(false)
+    const [able, setAble] = useState(false);
+    const [following, setFollowing] = useState([]);
 
     useEffect(() => {
-        
+
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
                 headers: {
@@ -43,10 +44,10 @@ export default function UserPage() {
         };
         axios.get(process.env.REACT_APP_API_URL + "/followers", config)
             .then((res) => {
-                console.log(res.data)
+                setFollowing(res.data);
                 if (res.data.length > 0) {
                     const follow = res.data.some(obj => obj.followedId === Number(id))
-                    if(follow) setButtonFollow("Unfollow")
+                    if (follow) setButtonFollow("Unfollow")
                     else setButtonFollow("Follow")
                 }
             }).catch(err => {
@@ -63,12 +64,12 @@ export default function UserPage() {
 
     }, [id, posts]);
 
-    function follow(){
+    function follow() {
         setAble(true)
-        const body = {followedId: id}
+        const body = { followedId: id }
         const config = { headers: { Authorization: `Bearer ${token}` } }
         axios.post(process.env.REACT_APP_API_URL + "/followers", body, config)
-            .then((response) =>{
+            .then((response) => {
                 setAble(false)
                 setButtonFollow("Unfollow")
             }).catch(err => {
@@ -82,8 +83,8 @@ export default function UserPage() {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-    
-        axios.delete(process.env.REACT_APP_API_URL + "/followers/"+id, config)
+
+        axios.delete(process.env.REACT_APP_API_URL + "/followers/" + id, config)
             .then((response) => {
                 setAble(false)
                 setButtonFollow("Follow");
@@ -93,7 +94,7 @@ export default function UserPage() {
                 alert(err.response)
             })
     }
-    
+
     if (!posts) {
         return (
             <><Header />
@@ -114,11 +115,11 @@ export default function UserPage() {
                 </TimelineContainer></>
         )
     }
-    if(posts && posts.postsUser.length === 0){
+    if (posts && posts.postsUser.length === 0) {
         return (
             <>
-                <Header/>
-                <TimelineContainer onClick={()=>setLogoutBox(false)}>
+                <Header />
+                <TimelineContainer onClick={() => setLogoutBox(false)}>
                     <ContentContainer>
                         <UserContainer>
                             <ProfileContainer>
@@ -126,9 +127,9 @@ export default function UserPage() {
                                 <h1>{posts.name}'s posts</h1>
                             </ProfileContainer>
                             {
-                                buttonFollow==="Follow"?
-                                <ButtonFollow data-test="follow-btn" disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Follow</ButtonFollow>:
-                                <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>Unfollow</ButtonUnfollow>
+                                buttonFollow === "Follow" ?
+                                    <ButtonFollow data-test="follow-btn" disabled={able} onClick={follow} style={{ display: userInfo.name === posts.name ? "none" : "block" }}>Follow</ButtonFollow> :
+                                    <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name === posts.name ? "none" : "block" }}>Unfollow</ButtonUnfollow>
                             }
                         </UserContainer>
                         <h1>There are no posts yet</h1>
@@ -138,7 +139,7 @@ export default function UserPage() {
             </>
         )
     }
-    
+
     return (
         <><Header />
             <TimelineContainer onClick={() => setLogoutBox(false)}>
@@ -149,16 +150,18 @@ export default function UserPage() {
                             <h1>{posts.name}'s posts</h1>
                         </ProfileContainer>
                         {
-                            buttonFollow==="Follow"?
-                            <ButtonFollow data-test="follow-btn" disabled={able} onClick={follow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonFollow>:
-                            <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name===posts.name ? "none" : "block" }}>{buttonFollow}</ButtonUnfollow>
+                            buttonFollow === "Follow" ?
+                                <ButtonFollow data-test="follow-btn" disabled={able} onClick={follow} style={{ display: userInfo.name === posts.name ? "none" : "block" }}>{buttonFollow}</ButtonFollow> :
+                                <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name === posts.name ? "none" : "block" }}>{buttonFollow}</ButtonUnfollow>
                         }
                     </UserContainer>
 
                     <Posts posts={posts}>
                         {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} like_count={p.like_count} nameUser={userInfo.name} liked_by={p.liked_by}
                             commentsCount={p.commentsCount}
-                            commentsData={p.commentsData} />)}
+                            commentsData={p.commentsData}
+                            following={following}
+                            userId={p.userId} />)}
                     </Posts>
                 </ContentContainer>
                 <Trending />
