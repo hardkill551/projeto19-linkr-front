@@ -199,7 +199,10 @@ const UserContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100vh;
+    width: 930px;
+    @media(max-width:930px){
+        width: 100vw;
+    }
 `
 
 const ButtonFollow = styled.button`
