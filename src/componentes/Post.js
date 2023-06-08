@@ -21,6 +21,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
     const token = localStorage.getItem("token")
+    const [isReply, setIsReply] = useState(true)
+    const [nameRepost, setNameRepost] = useState("adeline")
     
     useEffect(() => { 
         setShowWhoLike("")
@@ -135,6 +137,17 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
     return (
         <Container showComments={showComments}>
+
+                <ReplyPopUp isReply={isReply}>
+                    <BiRepost/>
+                    <span>
+                    Re-post by {nameRepost}
+                    </span>
+                    
+
+                </ReplyPopUp>
+
+
             <PostContainer data-test="post">
                 <Icons like={likeOn}>
                     <ProfilePicture src={picture} alt="profile-picture" />
@@ -544,5 +557,30 @@ const ProfilePicture = styled.img`
     @media (max-width:611px){
     width: 40px;
     height: 40px;
+    }
+`
+
+const ReplyPopUp = styled.div`
+    display: flex;
+    /* display: ${({ isReply }) => isReply ? 'flex' : 'flex'}; */
+    width:611px;
+    height: 50px;
+    max-height: 50px;
+    background-color: #1E1E1E;
+    border-radius: 16px;
+    justify-content: start;
+    align-items: center;
+    padding: 5px 0px 0px 10px;;
+    font-size: 25px;
+    color: white;
+    left: auto;
+    top:-30px;
+    span{
+        font-size: 10px;
+    }
+    @media (max-width:611px){
+        width:100%;
+        border-radius: 0px;
+        padding: 16px 10px;
     }
 `
