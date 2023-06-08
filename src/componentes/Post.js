@@ -28,7 +28,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [disable, setDisable] = useState(false)
 
 
-    useEffect(() => {
+    useEffect(() => { 
         setShowWhoLike("")
         const user = liked_by.some(obj => obj === nameUser)
         const newArray = liked_by.filter(obj => obj !== nameUser);
@@ -152,7 +152,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
         return message;
     }
-
     
     function showCommentsContainer() {
         if (showComments) {
@@ -182,9 +181,9 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             console.log(err.response.data)
         })
     }
-
+    console.log(commentsData)
     return (
-        <Container showComments={showComments}>
+        <Container showComments={showComments} commentsData={commentsData}>
             {activeDelete?<Delete setActiveDelete={setActiveDelete}  postId={postId}/>:<></>}
             <PostContainer data-test="post">
                 <Icons like={likeOn}>
@@ -415,9 +414,11 @@ const Comment = styled.div`
         margin-bottom:3px;
     }
 `
+
+
 const Container = styled.div`
-   margin-bottom:29px;
-   height: ${({ showComments }) => showComments ? '595px' : '100%'};
+   margin-bottom:'29px';
+   height: ${({ commentsData, showComments }) => !commentsData && showComments ? '380px' : (commentsData && showComments ? (commentsData.length === 0 && showComments ? '380px' : (commentsData.length === 1 && showComments ? '462px' : (commentsData.length === 2 && showComments ? '538px' : '617px'))) : "100%")};
    display:flex;
    flex-direction: column;
    position: relative;
@@ -441,6 +442,7 @@ const CommentsContainer = styled.div`
         width:100%;
         border-radius: 0px;
         padding: 16px 10px;
+        top:260px;
     }
 `
 
@@ -599,7 +601,7 @@ const PostContainer = styled.div`
     display: flex;
     justify-content: flex-start;
     gap:14px;
-    z-index:1;
+    z-index: 1;
     h2 {
         font-family: 'Lato';
         font-weight: 400;
@@ -627,6 +629,7 @@ const PostContainer = styled.div`
     }
 
     @media (max-width:580px){
+        gap:10px;
         div{
         max-width:85%;
         } 

@@ -157,7 +157,19 @@ export default function UserPage() {
                     </UserContainer>
 
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post key={p.id} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} linkDescription={p.linkDescription} postId={p.id} like_count={p.like_count} nameUser={userInfo.name} liked_by={p.liked_by}
+                        {posts.postsUser.map(p => <Post 
+                            key={p.id} 
+                            message={p.message} 
+                            name={posts.name} 
+                            picture={p.picture} 
+                            link={p.link} 
+                            linkTitle={p.linkTitle} 
+                            linkImage={p.linkImage} 
+                            linkDescription={p.linkDescription} 
+                            postId={p.id} 
+                            like_count={p.like_count} 
+                            nameUser={userInfo.name} 
+                            liked_by={p.liked_by}
                             commentsCount={p.commentsCount}
                             commentsData={p.commentsData}
                             following={following}
@@ -187,7 +199,10 @@ const UserContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100vh;
+    width: 930px;
+    @media(max-width:930px){
+        width: 100vw;
+    }
 `
 
 const ButtonFollow = styled.button`
