@@ -25,10 +25,10 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [activeUpdate, setActiveUpdate] = useState(false)
     const [description, setDescription] = useState(message)
     const inputEl = useRef(null);
-    const [disable, setDisable] = useState(false)
+    const [disable, setDisable] = useState(false);
 
 
-    useEffect(() => { 
+    useEffect(() => {
         setShowWhoLike("")
         const user = liked_by.some(obj => obj === nameUser)
         const newArray = liked_by.filter(obj => obj !== nameUser);
@@ -58,51 +58,51 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }).catch(err => {
             console.log(err.response.data)
         })
-        if(activeUpdate){
+        if (activeUpdate) {
             inputEl.current.focus()
             setDescription(message)
         }
     }, [activeUpdate])
 
-    function handleKeyPress(event){
+    function handleKeyPress(event) {
         event.preventDefault()
-        
-         document.onkeydown = function(e) {
-            if(e.key==="Escape" || e.key === "Enter") setDisable(true)
+
+        document.onkeydown = function (e) {
+            if (e.key === "Escape" || e.key === "Enter") setDisable(true)
             else return
-            
-            if(e.key === 'Escape') {
+
+            if (e.key === 'Escape') {
                 setDisable(false)
                 return setActiveUpdate(false)
             }
-            if(e.key==="Enter") {
-                
+            if (e.key === "Enter") {
+
                 if (description.length > 120) {
-                    
+
                     setDisable(false);
                     return alert("Caption can not be longer than 120 characters.");
                 }
-    
-            const obj = {
-                id:postId,
-                description: event.target.value
+
+                const obj = {
+                    id: postId,
+                    description: event.target.value
+                }
+
+                const request = api.put("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
+
+                request.then(() => {
+                    setDisable(false)
+                    window.location.reload(true);
+                });
+
+                request.catch(err => {
+                    alert("There was an error editing your link");
+                    setDisable(false);
+                })
             }
-    
-            const request = api.put("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
-    
-            request.then(() => {
-                setDisable(false)
-                window.location.reload(true);
-            });
-    
-            request.catch(err => {
-                alert("There was an error editing your link");
-                setDisable(false);
-            })
-            }
-          }
-          return setDescription(event.target.value)
-        
+        }
+        return setDescription(event.target.value)
+
     }
 
     function redirectToUrl(link) {
@@ -134,25 +134,25 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
         if (hashtags) {
             const messageParts = message.split(hashtagRegex);
-            
+
             return messageParts.map((part, index) => {
                 if (hashtags.includes(`#${part}`)) {
                     const hashtag = part.replace("#", "");
-                    
+
                     return (
                         <HashtagLink key={index} to={`/hashtag/${hashtag}`}>
                             <strong>{`#${part}`}</strong>
                         </HashtagLink>
                     );
                 }
-                
+
                 return part;
             });
         }
 
         return message;
     }
-    
+
     function showCommentsContainer() {
         if (showComments) {
             setShowComments(false);
@@ -177,6 +177,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             }
         }).then(res => {
             setComment("");
+            window.location.reload(true);
         }).catch(err => {
             console.log(err.response.data)
         })
@@ -184,7 +185,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     return (
 
         <Container showComments={showComments} commentsData={commentsData}>
-            {activeDelete?<Delete setActiveDelete={setActiveDelete}  postId={postId}/>:<></>}
+            {activeDelete ? <Delete setActiveDelete={setActiveDelete} postId={postId} /> : <></>}
             <PostContainer data-test="post">
                 <Icons like={likeOn}>
                     <ProfilePicture src={picture} alt="profile-picture" />
@@ -203,13 +204,13 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                             <h3 data-test="description">{renderMessageWithHashtags()}</h3>
                             <textarea disabled={disable} onChange={(event) => handleKeyPress(event)} ref={inputEl} placeholder={description} value={description}></textarea>
                         </div>
-                        
-                        {userId===userInfo.id?<div><BsFillPencilFill onClick={()=>{setActiveUpdate(!activeUpdate);}}/>
-                        <BiTrashAlt onClick={()=>setActiveDelete(!activeDelete)}/></div>:<></>}
-                        
-                        
-                        
-                        
+
+                        {userId === userInfo.id ? <div><BsFillPencilFill onClick={() => { setActiveUpdate(!activeUpdate); }} />
+                            <BiTrashAlt onClick={() => setActiveDelete(!activeDelete)} /></div> : <></>}
+
+
+
+
                     </Infos>
                     <LinkContainer onClick={() => redirectToUrl(link)}>
                         <div>
@@ -315,10 +316,10 @@ svg{
     cursor:pointer;
 }
 h3{
-    display:${(props)=>props.activeUpdate?"none":"inicial"};
+    display:${(props) => props.activeUpdate ? "none" : "inicial"};
 }
 textarea{
-    display:${(props)=>props.activeUpdate?"flex":"none"};
+    display:${(props) => props.activeUpdate ? "flex" : "none"};
     width:100%;
     border-radius:5px;
     border:0px;

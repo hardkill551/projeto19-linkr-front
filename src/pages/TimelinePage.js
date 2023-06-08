@@ -100,6 +100,7 @@ export default function TimelinePage() {
             setButtonText("Publishing");
             setLink("");
             setMessage("");
+            window.location.reload(true);
         });
 
         request.catch(err => {
