@@ -2,10 +2,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { AiOutlineHeart, AiFillHeart, AiOutlineComment } from "react-icons/ai";
-import { BsSend } from "react-icons/bs";
+import { BsSend, BsFillPencilFill } from "react-icons/bs";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
+import { BiTrashAlt } from "react-icons/bi";
+import Delete from "../pages/Delete/Delete";
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
@@ -18,6 +20,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
     const token = localStorage.getItem("token")
+    const [activeDelete, setActiveDelete] = useState(false)
 
     useEffect(() => {
         setShowWhoLike("")
@@ -132,6 +135,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
     return (
         <Container showComments={showComments}>
+            {activeDelete?<Delete setActiveDelete={setActiveDelete}  postId={postId}/>:<></>}
             <PostContainer data-test="post">
                 <Icons like={likeOn}>
                     <ProfilePicture src={picture} alt="profile-picture" />
@@ -144,8 +148,19 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     <h5 data-test="comment-counter">{commentsCount} comments</h5>
                 </Icons>
                 <div>
-                    <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
-                    <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                    <Infos>
+                        <div>
+                            <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
+                            <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                        </div>
+                        
+                        {userId===userInfo.id?<div><BsFillPencilFill/>
+                        <BiTrashAlt onClick={()=>setActiveDelete(!activeDelete)}/></div>:<></>}
+                        
+                        
+                        
+                        
+                    </Infos>
                     <LinkContainer onClick={() => redirectToUrl(link)}>
                         <div>
                             <h4>{linkTitle}</h4>
@@ -229,6 +244,24 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     }
 
 }
+
+
+const Infos = styled.div`
+width:100%;
+display:flex;
+justify-content:space-between;
+svg:first-child{
+    font-size:17px;
+}
+svg{
+    color:white;
+    font-size:20px;
+    margin-left:8px;
+    cursor:pointer;
+}
+`
+
+
 const CommentInput = styled.div`
         display:flex;
         gap:18px;

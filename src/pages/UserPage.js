@@ -30,7 +30,7 @@ export default function UserPage() {
                     Authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
+                setUserInfo({ ...userInfo, id:res.data.id, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
             }).catch(err => {
                 localStorage.clear();
                 navigate("/")
