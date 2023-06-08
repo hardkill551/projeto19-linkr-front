@@ -63,7 +63,7 @@ export default function TimelinePage() {
                 console.log(err.message);
             });
 
-    }, [posts])
+    }, [])
 
     if (error) {
         return (

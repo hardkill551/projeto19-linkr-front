@@ -12,6 +12,7 @@ export default function Login(){
     const token = localStorage.getItem("token")
     const {userInfo, setUserInfo} = useContext(UserContext)
     useEffect(()=>{
+        
         if(token){
             axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
                     Authorization: `Bearer ${token}`
@@ -55,7 +56,7 @@ export default function Login(){
         }
         
         axios.post(process.env.REACT_APP_API_URL+"/signin", user).then((res)=>{
-            setUserInfo({...userInfo, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
+            setUserInfo({...userInfo,id:res.data.id, name:res.data.name, email:res.data.email, picture:res.data.picture, token:res.data.token})
             localStorage.setItem("token", res.data.token)
             setDisable(false)
             navigate("/timeline")
