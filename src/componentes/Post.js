@@ -134,11 +134,13 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             console.log(err.response.data)
         })
     }
-
+    console.log(commentsData)
     return (
-        <Container showComments={showComments}>
+                
 
-                <ReplyPopUp isReply={isReply}>
+
+        <Container showComments={showComments} commentsData={commentsData}>
+        <ReplyPopUp isReply={isReply}>
                     <BiRepost/>
                     <span>
                     Re-post by {nameRepost}
@@ -146,8 +148,6 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     
 
                 </ReplyPopUp>
-
-
             <PostContainer data-test="post">
                 <Icons like={likeOn}>
                     <ProfilePicture src={picture} alt="profile-picture" />
@@ -328,9 +328,11 @@ const Comment = styled.div`
         margin-bottom:3px;
     }
 `
+
+
 const Container = styled.div`
-   margin-bottom:29px;
-   height: ${({ showComments }) => showComments ? '595px' : '100%'};
+   margin-bottom:'29px';
+   height: ${({ commentsData, showComments }) => !commentsData && showComments ? '380px' : (commentsData && showComments ? (commentsData.length === 0 && showComments ? '380px' : (commentsData.length === 1 && showComments ? '462px' : (commentsData.length === 2 && showComments ? '538px' : '617px'))) : "100%")};
    display:flex;
    flex-direction: column;
    position: relative;
@@ -354,6 +356,7 @@ const CommentsContainer = styled.div`
         width:100%;
         border-radius: 0px;
         padding: 16px 10px;
+        top:260px;
     }
 `
 
@@ -512,8 +515,7 @@ const PostContainer = styled.div`
     display: flex;
     justify-content: flex-start;
     gap:14px;
-    z-index:1;
-    position: static;
+    z-index: 1;
     h2 {
         font-family: 'Lato';
         font-weight: 400;
@@ -541,6 +543,7 @@ const PostContainer = styled.div`
     }
 
     @media (max-width:580px){
+        gap:10px;
         div{
         max-width:85%;
         } 

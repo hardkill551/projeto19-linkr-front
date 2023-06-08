@@ -25,6 +25,7 @@ export default function Header() {
 
 
   function SearchUsers(e) {
+    console.log(token)
     setFindActive(true)
     setSearch(e.target.value)
     if (e.target.value.length > 0) {
@@ -159,7 +160,13 @@ const InputContainer = styled.div`
   display: inline-block;
 
   @media(max-width:800px){
-    display:none;
+    position: absolute;
+    width: 95%;
+    top:80px;
+    left: 50%;
+    margin-left: 6px;
+    transform: translateX(-50%);
+    z-index: 1;
   }
 `;
 const StyledInput = styled(DebounceInput)`
@@ -181,6 +188,9 @@ const StyledInput = styled(DebounceInput)`
   ::placeholder {
     color: #c6c6c6;
   }
+  @media(max-width:800px){
+    width: 100%;
+  }
 `;
 const Icon = styled(BiSearch)`
   position: absolute;
@@ -196,6 +206,11 @@ const Icon = styled(BiSearch)`
   cursor: pointer;
   color: #c6c6c6;
   margin-right: 15px;
+  @media(max-width:800px){
+    width: 95%;
+    top:20px;
+    left: 45%;
+  }
 `;
 const FindUsers = styled.ul`
   width: 563px;
@@ -210,6 +225,10 @@ const FindUsers = styled.ul`
   padding-bottom: 23px;
   padding-left: 17px;
   display: ${({ findActive }) => (findActive ? "block" : "none")};
+  @media(max-width:800px){
+    width: 95%;
+    top:20px;
+  }
 `;
 
 const User = styled.div`
