@@ -62,7 +62,7 @@ export default function UserPage() {
             .catch(err => console.log(err))
 
 
-    }, [id, posts]);
+    }, [id]);
 
     function follow() {
         setAble(true)

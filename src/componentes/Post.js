@@ -62,7 +62,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             inputEl.current.focus()
             setDescription(message)
         }
-    }, [activeUpdate, setActiveUpdate])
+    }, [activeUpdate])
 
     function handleKeyPress(event){
         event.preventDefault()

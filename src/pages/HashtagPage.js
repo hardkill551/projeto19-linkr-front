@@ -57,7 +57,7 @@ export default function HashtagPage() {
                 setPosts(response.data);
             })
             .catch(err => console.log(err))
-    }, [hashtag, posts]);
+    }, [hashtag]);
 
 
     if (!posts) {
