@@ -181,8 +181,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             console.log(err.response.data)
         })
     }
-    console.log(commentsData)
     return (
+
         <Container showComments={showComments} commentsData={commentsData}>
             {activeDelete?<Delete setActiveDelete={setActiveDelete}  postId={postId}/>:<></>}
             <PostContainer data-test="post">
