@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { AiOutlineHeart, AiFillHeart, AiOutlineComment } from "react-icons/ai";
 import { BsSend, BsFillPencilFill } from "react-icons/bs";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { BiTrashAlt } from "react-icons/bi";
 import Delete from "../pages/Delete/Delete";
+import api from "../axios";
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
@@ -21,6 +22,11 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [comment, setComment] = useState("");
     const token = localStorage.getItem("token")
     const [activeDelete, setActiveDelete] = useState(false)
+    const [activeUpdate, setActiveUpdate] = useState(false)
+    const [description, setDescription] = useState(message)
+    const inputEl = useRef(null);
+    const [disable, setDisable] = useState(false)
+
 
     useEffect(() => {
         setShowWhoLike("")
@@ -52,10 +58,52 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }).catch(err => {
             console.log(err.response.data)
         })
+        if(activeUpdate){
+            inputEl.current.focus()
+            setDescription(message)
+        }
+    }, [activeUpdate, setActiveUpdate])
 
-    }, [])
-
-
+    function handleKeyPress(event){
+        event.preventDefault()
+        
+         document.onkeydown = function(e) {
+            if(e.key==="Escape" || e.key === "Enter") setDisable(true)
+            else return
+            
+            if(e.key === 'Escape') {
+                
+                setDisable(false)
+                return setActiveUpdate(false)
+            }
+            if(e.key==="Enter") {
+                if (description.length > 120) {
+                    
+                    setDisable(false);
+                    return alert("Caption can not be longer than 120 characters.");
+                }
+    
+            const obj = {
+                id:postId,
+                description
+            }
+    
+            const request = api.put("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
+    
+            request.then(() => {
+                setDisable(false)
+                window.location.reload(true);
+            });
+    
+            request.catch(err => {
+                alert("There was an error editing your link");
+                setDisable(false);
+            })
+            }
+          }
+        
+        setDescription(event.target.value)
+    }
 
     function redirectToUrl(link) {
         window.open(link);
@@ -83,11 +131,12 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
         const hashtags = message.match(hashtagRegex);
-
+        
         if (hashtags) {
             const messageParts = message.split(hashtagRegex);
 
             return messageParts.map((part, index) => {
+                
                 if (hashtags.includes(`#${part}`)) {
                     const hashtag = part.replace("#", "");
                     return (
@@ -96,14 +145,13 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                         </HashtagLink>
                     );
                 }
-
                 return part;
             });
         }
-
+        
         return message;
     }
-
+    
     function showCommentsContainer() {
         if (showComments) {
             setShowComments(false);
@@ -148,13 +196,14 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     <h5 data-test="comment-counter">{commentsCount} comments</h5>
                 </Icons>
                 <div>
-                    <Infos>
+                    <Infos activeUpdate={activeUpdate}>
                         <div>
                             <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
-                            <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                            <h3  data-test="description">{renderMessageWithHashtags()}</h3>
+                            <textarea disabled={disable} onChange={(event) => handleKeyPress(event)} ref={inputEl} placeholder={description} value={description}></textarea>
                         </div>
                         
-                        {userId===userInfo.id?<div><BsFillPencilFill/>
+                        {userId===userInfo.id?<div><BsFillPencilFill onClick={()=>{setActiveUpdate(!activeUpdate);}}/>
                         <BiTrashAlt onClick={()=>setActiveDelete(!activeDelete)}/></div>:<></>}
                         
                         
@@ -249,7 +298,12 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 const Infos = styled.div`
 width:100%;
 display:flex;
-justify-content:space-between;
+max-width:100% !important;
+div{
+    width:100%
+}div:nth-child(2){
+    width:14%
+}
 svg:first-child{
     font-size:17px;
 }
@@ -258,6 +312,23 @@ svg{
     font-size:20px;
     margin-left:8px;
     cursor:pointer;
+}
+h3{
+    display:${(props)=>props.activeUpdate?"none":"flex"};
+}
+textarea{
+    display:${(props)=>props.activeUpdate?"flex":"none"};
+    width:100%;
+    border-radius:5px;
+    border:0px;
+    flex-wrap:wrap;
+    padding:3px;
+    height:40px;
+    margin-bottom:10px;
+    font-size:14px;
+    font-family:"Lato";
+    font-weight:400;
+    resize: none
 }
 `
 
