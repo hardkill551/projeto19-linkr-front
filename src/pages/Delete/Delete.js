@@ -1,58 +1,58 @@
 import axios from "axios";
-import { DeleteContainer,TabDelete,ButtonDelete ,TextDelete} from "./style";
+import { DeleteContainer, TabDelete, ButtonDelete, TextDelete } from "./style";
 import { useContext, useState } from "react";
 import { UserContext } from "../../ContextAPI/ContextUser";
 import { ThreeDots } from "react-loader-spinner";
-export default function Delete({setActiveDelete, postId}) {
-        const {userInfo} = useContext(UserContext)
-        const [disable, setDisable] = useState(false)
-        function DeletePoster(){
-            setDisable(true)
-            axios.delete(process.env.REACT_APP_API_URL + "/posts", {
-                headers: {
-                    Authorization: userInfo.token
-                },
-                data: {
-                    postId
-                }
-            }).then(res => {
-                setActiveDelete(false)
-                setDisable(false)
-                window.location.reload(true);
-            }).catch(err => {
-                setActiveDelete(false)
-                setDisable(false)
-                alert("Não foi possível excluir o post!")
-            })
-        }
+export default function Delete({ setActiveDelete, postId }) {
+    const { userInfo } = useContext(UserContext)
+    const [disable, setDisable] = useState(false)
+    function DeletePoster() {
+        setDisable(true)
+        axios.delete(process.env.REACT_APP_API_URL + "/posts", {
+            headers: {
+                Authorization: userInfo.token
+            },
+            data: {
+                postId
+            }
+        }).then(res => {
+            setActiveDelete(false)
+            setDisable(false)
+            window.location.reload(true);
+        }).catch(err => {
+            setActiveDelete(false)
+            setDisable(false)
+            alert(err.response.data)
+        })
+    }
 
-    return(
+    return (
         <DeleteContainer>
             <TabDelete>
                 <TextDelete>
-                Are you sure you want to delete this post?
+                    Are you sure you want to delete this post?
                 </TextDelete>
                 <div>
-                <ButtonDelete backcolor={"#1877F2"}
-                 letterColor={"#FFFFFF"}
-                 disabled={disable}
-                  onClick={()=>setActiveDelete(false)}
-                  >{disable?<ThreeDots color="white"/>:"No, go back"}
-                  </ButtonDelete>
-                <ButtonDelete
-                disabled={disable}
-                 backcolor ={"#FFFFFF"}
-                 letterColor={"#1877F2"}
-                 onClick={()=>DeletePoster()}
-                 >
-                    {disable?<ThreeDots color="#1555FF"/>:"Yes, delete it "}
-                    
-                 </ButtonDelete>
+                    <ButtonDelete backcolor={"#1877F2"}
+                        letterColor={"#FFFFFF"}
+                        disabled={disable}
+                        onClick={() => setActiveDelete(false)}
+                    >{disable ? <ThreeDots color="white" /> : "No, go back"}
+                    </ButtonDelete>
+                    <ButtonDelete
+                        disabled={disable}
+                        backcolor={"#FFFFFF"}
+                        letterColor={"#1877F2"}
+                        onClick={() => DeletePoster()}
+                    >
+                        {disable ? <ThreeDots color="#1555FF" /> : "Yes, delete it "}
+
+                    </ButtonDelete>
                 </div>
-                
+
             </TabDelete>
 
-            
+
         </DeleteContainer>
     )
 }
