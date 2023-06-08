@@ -72,11 +72,11 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             else return
             
             if(e.key === 'Escape') {
-                
                 setDisable(false)
                 return setActiveUpdate(false)
             }
             if(e.key==="Enter") {
+                
                 if (description.length > 120) {
                     
                     setDisable(false);
@@ -85,7 +85,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     
             const obj = {
                 id:postId,
-                description
+                description: event.target.value
             }
     
             const request = api.put("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
@@ -101,8 +101,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             })
             }
           }
+          return setDescription(event.target.value)
         
-        setDescription(event.target.value)
     }
 
     function redirectToUrl(link) {
@@ -131,26 +131,28 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     function renderMessageWithHashtags() {
         const hashtagRegex = /#(\w+)/g;
         const hashtags = message.match(hashtagRegex);
-        
+
         if (hashtags) {
             const messageParts = message.split(hashtagRegex);
-
+            
             return messageParts.map((part, index) => {
-                
                 if (hashtags.includes(`#${part}`)) {
                     const hashtag = part.replace("#", "");
+                    
                     return (
                         <HashtagLink key={index} to={`/hashtag/${hashtag}`}>
                             <strong>{`#${part}`}</strong>
                         </HashtagLink>
                     );
                 }
+                
                 return part;
             });
         }
-        
+
         return message;
     }
+
     
     function showCommentsContainer() {
         if (showComments) {
@@ -199,7 +201,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     <Infos activeUpdate={activeUpdate}>
                         <div>
                             <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
-                            <h3  data-test="description">{renderMessageWithHashtags()}</h3>
+                            <h3 data-test="description">{renderMessageWithHashtags()}</h3>
                             <textarea disabled={disable} onChange={(event) => handleKeyPress(event)} ref={inputEl} placeholder={description} value={description}></textarea>
                         </div>
                         
@@ -314,7 +316,7 @@ svg{
     cursor:pointer;
 }
 h3{
-    display:${(props)=>props.activeUpdate?"none":"flex"};
+    display:${(props)=>props.activeUpdate?"none":"inicial"};
 }
 textarea{
     display:${(props)=>props.activeUpdate?"flex":"none"};
