@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
+
 const token = localStorage.getItem("token");
 
 
@@ -20,8 +21,11 @@ export default function Header() {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useContext(UserContext);
   const [users, setUsers] = useState([])
+  const [follows, setFollows] = useState([])
+
 
   function SearchUsers(e) {
+    console.log(token)
     setFindActive(true)
     setSearch(e.target.value)
     if (e.target.value.length > 0) {
@@ -29,7 +33,9 @@ export default function Header() {
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
-      request.then(response => { setUsers(response.data) });
+      request.then(response => { 
+        setUsers(response.data) 
+      });
       request.catch(err => console.log(err))
     } else {
       setFindActive(false)
@@ -60,6 +66,7 @@ export default function Header() {
             <User data-test="user-search" onClick={() => goToUserPage(user.id)} key={user.id}>
               <img src={user.picture} alt="user-picture" />
               <p>{user.name}</p>
+              <Following>{Number(user.is_followed)===1&&"• following"}</Following>
             </User>
           ))}
         </FindUsers>
@@ -114,6 +121,15 @@ export default function Header() {
     navigate("/");
   }
 }
+const Following = styled.div`
+  margin-left: 7px;
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 23px;
+  color: #C5C5C5;
+`
 
 const Centralizer = styled.div`
   position: absolute;
@@ -144,7 +160,13 @@ const InputContainer = styled.div`
   display: inline-block;
 
   @media(max-width:800px){
-    display:none;
+    position: absolute;
+    width: 95%;
+    top:80px;
+    left: 50%;
+    margin-left: 6px;
+    transform: translateX(-50%);
+    z-index: 1;
   }
 `;
 const StyledInput = styled(DebounceInput)`
@@ -166,6 +188,9 @@ const StyledInput = styled(DebounceInput)`
   ::placeholder {
     color: #c6c6c6;
   }
+  @media(max-width:800px){
+    width: 100%;
+  }
 `;
 const Icon = styled(BiSearch)`
   position: absolute;
@@ -181,6 +206,11 @@ const Icon = styled(BiSearch)`
   cursor: pointer;
   color: #c6c6c6;
   margin-right: 15px;
+  @media(max-width:800px){
+    width: 95%;
+    top:20px;
+    left: 45%;
+  }
 `;
 const FindUsers = styled.ul`
   width: 563px;
@@ -195,6 +225,10 @@ const FindUsers = styled.ul`
   padding-bottom: 23px;
   padding-left: 17px;
   display: ${({ findActive }) => (findActive ? "block" : "none")};
+  @media(max-width:800px){
+    width: 95%;
+    top:20px;
+  }
 `;
 
 const User = styled.div`
