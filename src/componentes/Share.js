@@ -6,6 +6,19 @@ export default function Share({showShare,setShowShare}) {
 
         function SharePoster(){
             alert("back sendo construido...")
+            useEffect(()=>{
+                if(token){
+                    axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+                            Authorization: `Bearer ${token}`
+                        }
+                    }).then(res=>{
+                        navigate("/timeline")
+                        
+                    }).catch(err=>{
+                        alert(err.response.data)
+                    })
+                }
+            }, [])
            setShowShare(false)
         }
 

@@ -140,11 +140,14 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
 
 
         <Container showComments={showComments} commentsData={commentsData}>
+            {showShare && <Share setShowShare={setShowShare} showShare={showShare} /> } 
         <ReplyPopUp isReply={isReply}>
+                <div>
                     <BiRepost/>
                     <span>
-                    Re-post by {nameRepost}
+                    Re-post by <strong>{nameRepost}</strong>
                     </span>
+                </div>
                     
 
                 </ReplyPopUp>
@@ -160,7 +163,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                     <h5 data-test="comment-counter">{commentsCount} comments</h5>
                     <BiRepost onClick={()=>setShowShare(true)}/>
                          <h5>10 re-post</h5>
-             {showShare && <Share setShowShare={setShowShare} showShare={showShare} /> }  
+              
                 </Icons>
                 <div>
                     <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
@@ -510,7 +513,7 @@ const PostContainer = styled.div`
     height: 276px;
     background-color: #171717;
     border-radius: 16px;
-    margin-bottom:29px;
+    margin-bottom:60px;
     padding: 16px 14px;
     display: flex;
     justify-content: flex-start;
@@ -564,26 +567,34 @@ const ProfilePicture = styled.img`
 `
 
 const ReplyPopUp = styled.div`
-    display: flex;
-    /* display: ${({ isReply }) => isReply ? 'flex' : 'flex'}; */
+    display: ${({ isReply }) => isReply ? 'flex' : 'none'};
     width:611px;
     height: 50px;
     max-height: 50px;
     background-color: #1E1E1E;
-    border-radius: 16px;
+    border-radius: 16px 16px 0 0;
     justify-content: start;
-    align-items: center;
+    align-items: flex-start;
     padding: 5px 0px 0px 10px;;
     font-size: 25px;
     color: white;
+    position: absolute;
     left: auto;
     top:-30px;
+    text-align: center;
     span{
-        font-size: 10px;
+        font-size: 15px;
+    }
+    strong{
+        font-weight: bolder;
+    }
+    div{
+        display: flex;
+        align-items: center;
     }
     @media (max-width:611px){
         width:100%;
         border-radius: 0px;
-        padding: 16px 10px;
+        font-size: 110%;
     }
 `
