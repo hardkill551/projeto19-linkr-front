@@ -29,7 +29,7 @@ export default function Share({setShowShare, postId}) {
                 
                
                 <ButtonContainer>
-                <Button backcolor={"#1877F2"}
+                <Button data-test="cancel" backcolor={"#1877F2"}
                  letterColor={"#FFFFFF"}
                   onClick={()=>setShowShare(false)}
                   >No, cancel
@@ -38,6 +38,7 @@ export default function Share({setShowShare, postId}) {
                  backcolor ={"#FFFFFF"}
                  letterColor={"#1877F2"}
                  onClick={SharePoster}
+                 data-test="confirm"
                  >
                     Yes, share! 
                  </Button>

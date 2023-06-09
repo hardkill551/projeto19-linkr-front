@@ -210,11 +210,11 @@ export default function Post({ loadCount, repost, repostBy, i, ct, setCt, messag
                     </Tooltip>
                     <AiOutlineComment data-test="comment-btn" disabled={repost} onClick={showCommentsContainer} />
                     <h5 data-test="comment-counter">{commentsCount} comments</h5>
-                    <BiRepost onClick={()=>{
+                    <BiRepost data-test="repost-btn" onClick={()=>{
                         if(!repost) setShowShare(true)
                         
                     }}/>
-                    <h5>10 re-post</h5>
+                    <h5 data-test="repost-counter">10 re-post</h5>
                 </Icons>
                 <div>
                     <Infos activeUpdate={activeUpdate}>
