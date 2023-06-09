@@ -190,7 +190,7 @@ export default function TimelinePage() {
                             </form>
                         </div>
                     </PublishingContainer>
-                    {count>0?<NewPosts onClick={()=>{setCount(0)}}>
+                    {count>0?<NewPosts data-test="load-btn" onClick={()=>{setCount(0)}}>
                         <p>{count} new posts, load more!</p>
                         <TfiReload/>
                     </NewPosts>:<></>}
@@ -227,7 +227,7 @@ export default function TimelinePage() {
 }
 
 
-const NewPosts = styled.div`
+const NewPosts = styled.button`
 background-color:#1877F2;
 width: 611px;
 height: 61px;
@@ -240,6 +240,7 @@ font-weight:400;
 font-family:'Lato';
 font-size:16px;
 margin-bottom:25px;
+border:0;
 cursor: pointer;
 :hover{
     background-color:#1555FF;
