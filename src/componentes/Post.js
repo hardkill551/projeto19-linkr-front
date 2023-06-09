@@ -50,11 +50,7 @@ export default function Post({ ct, setCt,message, name, picture, link, linkTitle
             setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length - 2} pessoas`)
         }
 
-        axios.post(process.env.REACT_APP_API_URL + "/likesCheck", { postId }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then(res => {
+        axios.post(process.env.REACT_APP_API_URL + "/likesCheck", { postId, userId }).then(res => {
             if (res.data) setLikeOn(true)
         }).catch(err => {
             console.log(err.response.data)
@@ -91,7 +87,8 @@ export default function Post({ ct, setCt,message, name, picture, link, linkTitle
 
                 request.then(() => {
                     setDisable(false);
-                    window.location.reload()
+                    setActiveUpdate(false)
+                    setCt(ct+1)
                 });
 
                 request.catch(err => {
