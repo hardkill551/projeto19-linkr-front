@@ -87,12 +87,14 @@ export default function HashtagPage() {
             <ContentContainer>
                 <h1 data-test="hashtag-title"># {hashtag}</h1>
                 <Posts posts={posts}>
-                    {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} liked_by={p.liked_by} commentsCount={p.commentsCount}
+                    {posts.map((p,i) => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} liked_by={p.liked_by} commentsCount={p.commentsCount}
                         commentsData={p.commentsData}
                         following={following}
                         userId={p.userId}
                         ct={ct}
-                        setCt={setCt} />)}
+                        setCt={setCt}
+                        i={i}
+                        loadCount={20} />)}
                 </Posts>
             </ContentContainer>
             <Trending ct={ct} />

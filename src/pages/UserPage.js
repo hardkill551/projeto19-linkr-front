@@ -159,8 +159,10 @@ export default function UserPage() {
                     </UserContainer>
 
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post
+                        {posts.postsUser.map((p,i) => <Post
                             ct={ct}
+                            i={i}
+                            loadCount={20}
                             setCt={setCt}
                             key={p.id}
                             message={p.message}
