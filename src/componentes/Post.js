@@ -10,7 +10,7 @@ import { BiTrashAlt } from "react-icons/bi";
 import Delete from "../pages/Delete/Delete";
 import api from "../axios";
 
-export default function Post({ ct, setCt,message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
+export default function Post({ loadCount, i, ct, setCt,message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
     const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -182,6 +182,7 @@ export default function Post({ ct, setCt,message, name, picture, link, linkTitle
             console.log(err.response.data)
         })
     }
+    if(i<loadCount){
     return (
 
         <Container showComments={showComments} commentsData={commentsData}>
@@ -246,7 +247,7 @@ export default function Post({ ct, setCt,message, name, picture, link, linkTitle
             </CommentsContainer>
         </Container>
     );
-
+}
     function deslike() {
         axios.delete(process.env.REACT_APP_API_URL + "/likes", {
             headers: {

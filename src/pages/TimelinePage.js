@@ -12,6 +12,8 @@ import { LogoutContext } from "../ContextAPI/ContextLogout";
 import Trending from "../componentes/Trending";
 import useInterval from 'use-interval'
 import { TfiReload } from "react-icons/tfi";
+import InfiniteScroll from 'react-infinite-scroller';
+import LoadingPosts from "../componentes/LoadingPage";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
@@ -28,17 +30,19 @@ export default function TimelinePage() {
     const [following, setFollowing] = useState([]);
     const [count, setCount] = useState(0)
     const [ct, setCt] = useState(0)
+    const [loadCount, setLoadCount] = useState(10)
+    const [quantity, setQuantity] = useState(true)
     useInterval(()=>{
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+        axios.get(process.env.REACT_APP_API_URL + "/followers")
             .then((res) => {
 
                 if (res.data.length > 0) {
-                    setHaveFollowers(true)
+                    setHaveFollowers(true);
                     setFollowing(res.data);
-                    const request = api.get("/posts", config);
+                    const request = api.get("/posts",config);
                     request.then(response => {
                         if(response.data.length > 0) {
                             if(response.data[0].id!==posts[0].id) {
@@ -81,6 +85,7 @@ export default function TimelinePage() {
         else {
             navigate("/")
         }
+        
         if(count === 0){
         const config = {
             headers: { Authorization: `Bearer ${token}` },
@@ -91,10 +96,10 @@ export default function TimelinePage() {
                 if (res.data.length > 0) {
                     setHaveFollowers(true)
                     setFollowing(res.data);
-                    const request = api.get("/posts", config);
+                    const request = api.get("/posts" ,config);
                     request.then(response => {
                         setPosts(response.data)
-
+                        if(response.data.length<loadCount) setQuantity(false)
                     });
                     request.catch(err => {
                         setError(true);
@@ -104,7 +109,7 @@ export default function TimelinePage() {
                 console.log(err.message);
             });
         }
-    }, [ct, count])
+    }, [ct, count, loadCount, quantity])
 
     if (error) {
         return (
@@ -194,9 +199,19 @@ export default function TimelinePage() {
                         <p>{count} new posts, load more!</p>
                         <TfiReload/>
                     </NewPosts>:<></>}
-                    
+                    <InfiniteScroll
+                        pageStart={0}
+                        loadMore={()=>setLoadCount(loadCount+10)}
+                        hasMore={quantity}
+                        loader={<LoadingPosts/>}
+                        >
+                        
+
                     <Posts posts={posts}>
-                        {posts.map(p => <Post key={p.id}
+                        {posts.map((p,i) => <Post 
+                            i={i}
+                            loadCount={loadCount}
+                            key={p.id}
                             ct={ct}
                             setCt={setCt}
                             like_count={p.like_count}
@@ -218,7 +233,7 @@ export default function TimelinePage() {
                         />)}
                         {haveFollowers ? <p data-test="message">No posts found from your friends</p> : <p data-test="message">You don't follow anyone yet. Search for new friends!</p>}
                     </Posts>
-
+                    </InfiniteScroll>
                 </ContentContainer>
                 <Trending ct={ct} posts={posts} />
             </TimelineContainer>
