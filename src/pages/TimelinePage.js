@@ -31,12 +31,12 @@ export default function TimelinePage() {
     const [count, setCount] = useState(0)
     const [ct, setCt] = useState(0)
     const [loadCount, setLoadCount] = useState(10)
-    const [quantity, setQuantity] = useState(true)
+    const [quantity, setQuantity] = useState(()=>{if(posts===null) return false; else return true})
     useInterval(()=>{
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        axios.get(process.env.REACT_APP_API_URL + "/followers")
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
             .then((res) => {
 
                 if (res.data.length > 0) {
