@@ -50,8 +50,10 @@ export default function TimelinePage() {
                                     }
                                     else if(response.data[i].id===posts[0].id) {
                                         setCount(newCount)
+                                        break
                                     }
                                 }
+                                
                             }
                         }
                     });
@@ -62,7 +64,7 @@ export default function TimelinePage() {
             }).catch(err => {
                 console.log(err.message);
             });
-    }, 1000)
+    }, 15000)
     useEffect(() => {
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
