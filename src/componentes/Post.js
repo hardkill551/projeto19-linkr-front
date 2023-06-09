@@ -8,6 +8,8 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 import Share from "./Share";
+import LoadingPosts from "./LoadingPosts";
+
 
 export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
@@ -21,7 +23,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
     const token = localStorage.getItem("token")
-    const [isReply, setIsReply] = useState(true)
+    const [isReply, setIsReply] = useState(false)
     const [nameRepost, setNameRepost] = useState("adeline")
     
     useEffect(() => { 
@@ -128,19 +130,18 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }).then(res => {
+        }).then(res => {                                                                                                                                                                                                                                                    
             setComment("");
         }).catch(err => {
             console.log(err.response.data)
         })
     }
-    console.log(commentsData)
     return (
                 
 
 
         <Container showComments={showComments} commentsData={commentsData}>
-            {showShare && <Share setShowShare={setShowShare} showShare={showShare} /> } 
+            {showShare && <Share setShowShare={setShowShare} showShare={showShare} /> }                                                                     
         <ReplyPopUp isReply={isReply}>
                 <div>
                     <BiRepost/>

@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react"
-
+import { useEffect, useState,useNavigate } from "react"
+import axios from "axios";
 import styled from "styled-components"
 export default function Share({showShare,setShowShare}) {
-
+    // const token = localStorage.getItem("token");
+    // const navigate = useNavigate()
 
         function SharePoster(){
             alert("back sendo construido...")
-            useEffect(()=>{
-                if(token){
-                    axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
-                            Authorization: `Bearer ${token}`
-                        }
-                    }).then(res=>{
-                        navigate("/timeline")
+            // useEffect(()=>{
+            //     if(token){
+            //         axios.post(process.env.REACT_APP_API_URL+"/token", {},{headers:{
+            //                 Authorization: `Bearer ${token}`
+            //             }
+            //         }).then(res=>{
+            //             navigate("/timeline")
                         
-                    }).catch(err=>{
-                        alert(err.response.data)
-                    })
-                }
-            }, [])
+            //         }).catch(err=>{
+            //             alert(err.response.data)
+            //         })
+            //     }
+            // }, [])
            setShowShare(false)
         }
 

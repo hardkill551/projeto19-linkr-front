@@ -10,6 +10,8 @@ import axios from "axios";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import Trending from "../componentes/Trending";
+import InfiniteScroll from "react-infinite-scroller";
+import LoadingPosts from "../componentes/LoadingPosts";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
@@ -77,6 +79,11 @@ export default function TimelinePage() {
             </>
         );
     }
+
+    // function testingloader(){
+    //     alert("carregando mais mensagens")
+    // }
+
 
     function createPost(e) {
         e.preventDefault();
@@ -149,7 +156,20 @@ export default function TimelinePage() {
 
                         </div>
                     </PublishingContainer>
+                 
+
+
                     <Posts posts={posts}>
+
+                        <InfiniteScroll
+                        
+                        pageStart={0}
+                        // loadMore={()=> ())}
+                        hasMore={true}
+                        loader={<LoadingPosts/>}
+
+                        >
+
                         {posts.map(p => <Post key={p.id}
                             like_count={p.like_count}
                             message={p.message}
@@ -168,9 +188,17 @@ export default function TimelinePage() {
                             following={following}
                             userId={p.userId}
                         />)}
+
+                        </InfiniteScroll>
+
+                       
                         {haveFollowers ? <p data-test="message">No posts found from your friends</p> : <p data-test="message">You don't follow anyone yet. Search for new friends!</p>}
+
                     </Posts>
 
+                   
+                    
+                       
                 </ContentContainer>
                 <Trending posts={posts} />
             </TimelineContainer>
