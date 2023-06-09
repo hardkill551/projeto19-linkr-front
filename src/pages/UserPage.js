@@ -10,6 +10,8 @@ import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import { ThreeDots } from 'react-loader-spinner'
 import Trending from "../componentes/Trending";
+import InfiniteScroll from "react-infinite-scroller";
+import LoadingPosts from "../componentes/LoadingPage";
 
 export default function UserPage() {
     const { id } = useParams();
@@ -22,7 +24,8 @@ export default function UserPage() {
     const [able, setAble] = useState(false);
     const [following, setFollowing] = useState([]);
     const [ct, setCt] = useState(0)
-
+    const [loadCount, setLoadCount] = useState(10)
+    const [quantity, setQuantity] = useState(true)
 
     useEffect(() => {
 
@@ -55,7 +58,7 @@ export default function UserPage() {
             }).catch(err => {
                 console.log(err.message);
             });
-        axios.get(process.env.REACT_APP_API_URL + "/posts/" + id,
+        axios.get(process.env.REACT_APP_API_URL + "/posts/" + id +"/0",
             { headers: { Authorization: `Bearer ${token}` } }
         )
             .then(response => {
@@ -65,7 +68,42 @@ export default function UserPage() {
 
 
     }, [id, ct]);
-
+    function loadMore(){
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+            .then((res) => {
+                setFollowing(res.data);
+                if (res.data.length > 0) {
+                    const follow = res.data.some(obj => obj.followedId === Number(id))
+                    if (follow) setButtonFollow("Unfollow")
+                    else setButtonFollow("Follow")
+                }
+            }).catch(err => {
+                console.log(err.message);
+            });
+        axios.get(process.env.REACT_APP_API_URL + "/posts/"+ id+"/"+ String(loadCount),
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+            .then(response => {
+                const moreTenPost = []
+                        for(let i = 0; i<posts.postsUser.length;i++){
+                            moreTenPost.push(posts.postsUser[i])
+                        }
+                        for(let i = 0; i<response.data.postsUser.length;i++){
+                            moreTenPost.push(response.data.postsUser[i])
+                        }
+                        if(moreTenPost[moreTenPost.length-1].id===posts.postsUser[posts.postsUser.length-1].id) return setQuantity(false)
+                        setPosts({...posts, postsUser:moreTenPost})
+                        setLoadCount(loadCount+10)
+            })
+            .catch(err => {
+                setQuantity(false)
+            }
+                )
+            
+    }
     function follow() {
         setAble(true)
         const body = { followedId: id }
@@ -157,12 +195,19 @@ export default function UserPage() {
                                 <ButtonUnfollow data-test="follow-btn" disabled={able} onClick={unfollow} style={{ display: userInfo.name === posts.name ? "none" : "block" }}>{buttonFollow}</ButtonUnfollow>
                         }
                     </UserContainer>
+                    <InfiniteScroll
+                        pageStart={0}
+                        loadMore={()=>loadMore()}
+                        hasMore={quantity}
+                        loader={<LoadingPosts/>}
+                        >
+                        
 
                     <Posts posts={posts}>
                         {posts.postsUser.map((p,i) => <Post
                             ct={ct}
                             i={i}
-                            loadCount={20}
+                            loadCount={loadCount}
                             setCt={setCt}
                             key={p.id}
                             message={p.message}
@@ -181,6 +226,7 @@ export default function UserPage() {
                             following={following}
                             userId={p.userId} />)}
                     </Posts>
+                    </InfiniteScroll>
                 </ContentContainer>
                 <Trending ct={ct} />
             </TimelineContainer></>

@@ -31,7 +31,7 @@ export default function TimelinePage() {
     const [count, setCount] = useState(0)
     const [ct, setCt] = useState(0)
     const [loadCount, setLoadCount] = useState(10)
-    const [quantity, setQuantity] = useState(()=>{if(posts===null) return false; else return true})
+    const [quantity, setQuantity] = useState(true)
     useInterval(()=>{
         const config = {
             headers: { Authorization: `Bearer ${token}` },
@@ -42,7 +42,7 @@ export default function TimelinePage() {
                 if (res.data.length > 0) {
                     setHaveFollowers(true);
                     setFollowing(res.data);
-                    const request = api.get("/posts",config);
+                    const request = api.get("/posts/0",config);
                     request.then(response => {
                         if(response.data.length > 0) {
                             if(response.data[0].id!==posts[0].id) {
@@ -92,14 +92,14 @@ export default function TimelinePage() {
         };
         axios.get(process.env.REACT_APP_API_URL + "/followers", config)
             .then((res) => {
-
+                if (res.data.length===0) setQuantity(false)
                 if (res.data.length > 0) {
                     setHaveFollowers(true)
                     setFollowing(res.data);
-                    const request = api.get("/posts" ,config);
+                    const request = api.get("/posts/0" ,config);
                     request.then(response => {
                         setPosts(response.data)
-                        if(response.data.length<loadCount) setQuantity(false)
+                        if (response.data.length<10) setQuantity(false)
                     });
                     request.catch(err => {
                         setError(true);
@@ -109,7 +109,7 @@ export default function TimelinePage() {
                 console.log(err.message);
             });
         }
-    }, [ct, count, loadCount, quantity])
+    }, [ct, count])
 
     if (error) {
         return (
@@ -156,7 +156,39 @@ export default function TimelinePage() {
         })
 
     }
+    function loadMore(){
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+            .then((res) => {
 
+                if (res.data.length > 0) {
+                    setHaveFollowers(true)
+                    setFollowing(res.data);
+                    const request = api.get("/posts/"+String(loadCount) ,config);
+                    request.then(response => {
+                        const moreTenPost = []
+                        for(let i = 0; i<posts.length;i++){
+                            moreTenPost.push(posts[i])
+                        }
+                        for(let i = 0; i<response.data.length;i++){
+                            moreTenPost.push(response.data[i])
+                        }
+                        if(moreTenPost[moreTenPost.length-1].id===posts[posts.length-1].id) return setQuantity(false)
+                        setPosts(moreTenPost)
+                        setLoadCount(loadCount+10)
+
+                    });
+                    request.catch(err => {
+                        setError(true);
+                    });
+                } else setPosts([])
+            }).catch(err => {
+                console.log(err.message);
+            });
+            
+    }
     if (posts === null) {
         return (
             <><Header />
@@ -201,7 +233,7 @@ export default function TimelinePage() {
                     </NewPosts>:<></>}
                     <InfiniteScroll
                         pageStart={0}
-                        loadMore={()=>setLoadCount(loadCount+10)}
+                        loadMore={()=>loadMore()}
                         hasMore={quantity}
                         loader={<LoadingPosts/>}
                         >
