@@ -35,11 +35,13 @@ export default function Delete({ setActiveDelete, postId }) {
                 <div>
                     <ButtonDelete backcolor={"#1877F2"}
                         letterColor={"#FFFFFF"}
+                        data-test="cancel"
                         disabled={disable}
                         onClick={() => setActiveDelete(false)}
                     >{disable ? <ThreeDots color="white" /> : "No, go back"}
                     </ButtonDelete>
                     <ButtonDelete
+                        data-test="confirm"
                         disabled={disable}
                         backcolor={"#FFFFFF"}
                         letterColor={"#1877F2"}

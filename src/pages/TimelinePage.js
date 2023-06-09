@@ -27,6 +27,7 @@ export default function TimelinePage() {
     const [haveFollowers, setHaveFollowers] = useState(false);
     const [following, setFollowing] = useState([]);
     const [count, setCount] = useState(0)
+    const [ct, setCt] = useState(0)
     useInterval(()=>{
         const config = {
             headers: { Authorization: `Bearer ${token}` },
@@ -40,11 +41,9 @@ export default function TimelinePage() {
                     const request = api.get("/posts", config);
                     request.then(response => {
                         if(response.data.length > 0) {
-                            if(response.data[0].id===posts[0].id) console.log(true)
+                            if(response.data[0].id!==posts[0].id) console.log(true)
+                            else console.log(false)
                         }
-                        
-                        else console.log(false)
-
                     });
                     request.catch(err => {
                         setError(true);
@@ -53,7 +52,7 @@ export default function TimelinePage() {
             }).catch(err => {
                 console.log(err.message);
             });
-    }, 15000)
+    }, 1000)
     useEffect(() => {
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
@@ -91,8 +90,8 @@ export default function TimelinePage() {
             }).catch(err => {
                 console.log(err.message);
             });
-
-    }, [])
+            
+    }, [ct])
 
     if (error) {
         return (
@@ -129,7 +128,7 @@ export default function TimelinePage() {
             setButtonText("Publishing");
             setLink("");
             setMessage("");
-            window.location.reload(true);
+            setCt(ct+1)
         });
 
         request.catch(err => {
@@ -186,6 +185,8 @@ export default function TimelinePage() {
                     
                     <Posts posts={posts}>
                         {posts.map(p => <Post key={p.id}
+                            ct={ct}
+                            setCt={setCt}
                             like_count={p.like_count}
                             message={p.message}
                             name={p.name}
