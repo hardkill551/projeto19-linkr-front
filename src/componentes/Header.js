@@ -11,7 +11,6 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import api from "../axios";
 
-const token = localStorage.getItem("token");
 
 
 export default function Header() {
@@ -23,9 +22,10 @@ export default function Header() {
   const [users, setUsers] = useState([])
   const [follows, setFollows] = useState([])
 
+  const token = localStorage.getItem("token");
 
   function SearchUsers(e) {
-    console.log(token)
+    
     setFindActive(true)
     setSearch(e.target.value)
     if (e.target.value.length > 0) {
