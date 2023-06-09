@@ -87,6 +87,7 @@ export default function UserPage() {
             { headers: { Authorization: `Bearer ${token}` } }
         )
             .then(response => {
+                
                 const moreTenPost = []
                         for(let i = 0; i<posts.postsUser.length;i++){
                             moreTenPost.push(posts.postsUser[i])
@@ -207,6 +208,8 @@ export default function UserPage() {
                         {posts.postsUser.map((p,i) => <Post
                             ct={ct}
                             i={i}
+                            repost={p.repost}
+                            repostBy={p.repostBy}
                             loadCount={loadCount}
                             setCt={setCt}
                             key={p.id}

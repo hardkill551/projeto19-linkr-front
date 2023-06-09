@@ -137,6 +137,8 @@ export default function HashtagPage() {
                         ct={ct}
                         setCt={setCt}
                         i={i}
+                        repost={p.repost}
+                        repostBy={p.repostBy}
                         loadCount={20} />)}
                 </Posts>
                 </InfiniteScroll>

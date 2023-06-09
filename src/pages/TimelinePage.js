@@ -246,6 +246,8 @@ export default function TimelinePage() {
                             key={p.id}
                             ct={ct}
                             setCt={setCt}
+                            repost={p.repost}
+                            repostBy={p.repostBy}
                             like_count={p.like_count}
                             message={p.message}
                             name={p.name}

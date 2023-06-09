@@ -6,11 +6,12 @@ import { BsSend, BsFillPencilFill } from "react-icons/bs";
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
-import { BiTrashAlt } from "react-icons/bi";
-import Delete from "../pages/Delete/Delete";
+import { BiRepost, BiTrashAlt } from "react-icons/bi";
 import api from "../axios";
+import Delete from "./Delete/Delete";
+import Share from "./Share/Share";
 
-export default function Post({ loadCount, i, ct, setCt,message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
+export default function Post({ loadCount, repost, repostBy, i, ct, setCt, message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
     const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -26,14 +27,14 @@ export default function Post({ loadCount, i, ct, setCt,message, name, picture, l
     const [description, setDescription] = useState(message)
     const inputEl = useRef(null);
     const [disable, setDisable] = useState(false);
-    
+    const [showShare, setShowShare] = useState(false)
 
 
     useEffect(() => {
         setShowWhoLike("")
         const user = liked_by.some(obj => obj === nameUser)
         const newArray = liked_by.filter(obj => obj !== nameUser);
-
+        console.log(repost)
         if (liked_by.length === 0) {
             setNotShowToolTip(true)
         } else if (liked_by.length === 1 && user) { //caso em que o unico like é meu
@@ -187,16 +188,33 @@ export default function Post({ loadCount, i, ct, setCt,message, name, picture, l
 
         <Container showComments={showComments} commentsData={commentsData}>
             {activeDelete ? <Delete setActiveDelete={setActiveDelete} postId={postId} /> : <></>}
+            {showShare && <Share setShowShare={setShowShare} postId={postId} /> }     
+            {repost?<ReplyPopUp>
+                <div>
+                    <BiRepost/>
+                    <span>
+                    Re-post by <strong>{repostBy}</strong>
+                    </span>
+                </div>
+                    
+
+                </ReplyPopUp>:<></>}
             <PostContainer data-test="post">
                 <Icons like={likeOn}>
                     <ProfilePicture src={picture} alt="profile-picture" />
+                    
                     {likeOn ? <AiFillHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" className="like" onClick={() => deslike()} /> : <AiOutlineHeart onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} data-test="like-btn" onClick={() => giveLike()} />}
                     <h5 data-test="counter">{Number(count)} likes</h5>
                     <Tooltip data-test="tooltip" showTooltip={showTooltip}>
                         <p className='tooltip-text'>{showWhoLike}</p>
                     </Tooltip>
-                    <AiOutlineComment data-test="comment-btn" onClick={showCommentsContainer} />
+                    <AiOutlineComment data-test="comment-btn" disabled={repost} onClick={showCommentsContainer} />
                     <h5 data-test="comment-counter">{commentsCount} comments</h5>
+                    <BiRepost onClick={()=>{
+                        if(!repost) setShowShare(true)
+                        
+                    }}/>
+                    <h5>10 re-post</h5>
                 </Icons>
                 <div>
                     <Infos activeUpdate={activeUpdate}>
@@ -241,14 +259,15 @@ export default function Post({ loadCount, i, ct, setCt,message, name, picture, l
                 </Comments>
                 <CommentInput>
                     <img src={userInfo.picture} />
-                    <input data-test="comment-input" type="text" placeholder="write a comment..." value={comment} onChange={e => setComment(e.target.value)}></input>
-                    <BsSend data-test="comment-submit" onClick={() => createComment(postId)} />
+                    <input disabled={repost} data-test="comment-input" type="text" placeholder="write a comment..." value={comment} onChange={e => setComment(e.target.value)}></input>
+                    <BsSend data-test="comment-submit" onClick={() => {if(!repost)createComment(postId)}} />
                 </CommentInput>
             </CommentsContainer>
         </Container>
     );
 }
     function deslike() {
+        if(repost) return
         axios.delete(process.env.REACT_APP_API_URL + "/likes", {
             headers: {
                 Authorization: userInfo.token
@@ -275,6 +294,7 @@ export default function Post({ loadCount, i, ct, setCt,message, name, picture, l
         })
     }
     function giveLike() {
+        if(repost) return
         axios.post(process.env.REACT_APP_API_URL + "/likes", { postId }, {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`
@@ -424,6 +444,7 @@ const Container = styled.div`
    display:flex;
    flex-direction: column;
    position: relative;
+   margin-top:30px;
    @media (max-width:611px){
         width:100%;
     }
@@ -440,6 +461,7 @@ const CommentsContainer = styled.div`
     left: auto;
     top:220px;
     padding: 50px 14px 16px 14px;
+    
     @media (max-width:611px){
         width:100%;
         border-radius: 0px;
@@ -604,6 +626,7 @@ const PostContainer = styled.div`
     justify-content: flex-start;
     gap:14px;
     z-index: 1;
+    
     h2 {
         font-family: 'Lato';
         font-weight: 400;
@@ -649,4 +672,37 @@ const ProfilePicture = styled.img`
     width: 40px;
     height: 40px;
     }
+`
+const ReplyPopUp = styled.div`
+display: 'flex';
+width:611px;
+height: 50px;
+max-height: 50px;
+background-color: #1E1E1E;
+border-radius: 16px 16px 0 0;
+justify-content: start;
+align-items: flex-start;
+padding: 5px 0px 0px 10px;;
+font-size: 25px;
+color: white;
+position: absolute;
+left: auto;
+top:-30px;
+text-align: center;
+
+span{
+    font-size: 15px;
+}
+strong{
+    font-weight: bolder;
+}
+div{
+    display: flex;
+    align-items: center;
+}
+@media (max-width:611px){
+    width:100%;
+    border-radius: 0px;
+    font-size: 110%;
+}
 `
