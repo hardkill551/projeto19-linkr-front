@@ -227,7 +227,8 @@ export default function UserPage() {
                             commentsCount={p.commentsCount}
                             commentsData={p.commentsData}
                             following={following}
-                            userId={p.userId} />)}
+                            userId={p.userId}
+                            id={p.userId} />)}
                     </Posts>
                     </InfiniteScroll>
                 </ContentContainer>
