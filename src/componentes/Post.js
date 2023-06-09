@@ -187,8 +187,8 @@ export default function Post({ loadCount, repost, repostBy, i, ct, setCt, messag
     return (
 
         <Container showComments={showComments} commentsData={commentsData}>
-            {activeDelete ? <Delete setActiveDelete={setActiveDelete} postId={postId} /> : <></>}
-            {showShare && <Share setShowShare={setShowShare} postId={postId} /> }     
+            {activeDelete ? <Delete setActiveDelete={setActiveDelete} setCt={setCt} ct={ct} postId={postId} /> : <></>}
+            {showShare && <Share setShowShare={setShowShare} setCt={setCt} ct={ct} postId={postId} /> }     
             {repost?<ReplyPopUp>
                 <div>
                     <BiRepost/>

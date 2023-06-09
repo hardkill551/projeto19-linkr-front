@@ -42,7 +42,7 @@ export default function TimelinePage() {
                 if (res.data.length > 0) {
                     setHaveFollowers(true);
                     setFollowing(res.data);
-                    const request = api.get("/posts/0",config);
+                    const request = api.get("/posts/"+String(loadCount),config);
                     request.then(response => {
                         if(response.data.length > 0) {
                             if(response.data[0].id!==posts[0].id) {
