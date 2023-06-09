@@ -3,7 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export default function Trending({ posts }) {
+export default function Trending({ ct }) {
   const [trends, setTrends] = useState([]);
   const token = localStorage.getItem("token");
 
@@ -16,7 +16,7 @@ export default function Trending({ posts }) {
     request.catch((error) => {
       console.log(error.response.data);
     });
-  }, [posts]);
+  }, [ct]);
   return (
     <TrendingContainer data-test="trending">
       <h2>trending</h2>

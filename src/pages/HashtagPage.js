@@ -21,6 +21,7 @@ export default function HashtagPage() {
     const navigate = useNavigate();
     const { hashtag } = useParams();
     const [following, setFollowing] = useState([]);
+    const [ct, setCt] = useState(0)
 
     useEffect(() => {
         if (token) {
@@ -29,7 +30,7 @@ export default function HashtagPage() {
                     Authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
+                setUserInfo({ ...userInfo,id:res.data.id, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
             }).catch(err => {
                 localStorage.clear();
                 navigate("/")
@@ -57,7 +58,7 @@ export default function HashtagPage() {
                 setPosts(response.data);
             })
             .catch(err => console.log(err))
-    }, [hashtag, posts]);
+    }, [hashtag, ct]);
 
 
     if (!posts) {
@@ -89,10 +90,12 @@ export default function HashtagPage() {
                     {posts.map(p => <Post key={p.id} like_count={p.like_count} message={p.message} name={p.name} picture={p.picture} link={p.link} linkTitle={p.linkTitle} linkImage={p.linkImage} postId={p.id} linkDescription={p.linkDescription} id={p.userId} nameUser={userInfo.name} liked_by={p.liked_by} commentsCount={p.commentsCount}
                         commentsData={p.commentsData}
                         following={following}
-                        userId={p.userId} />)}
+                        userId={p.userId}
+                        ct={ct}
+                        setCt={setCt} />)}
                 </Posts>
             </ContentContainer>
-            <Trending />
+            <Trending ct={ct} />
         </TimelineContainer></>
     )
 }

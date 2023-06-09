@@ -21,6 +21,8 @@ export default function UserPage() {
     const [buttonFollow, setButtonFollow] = useState("Follow")
     const [able, setAble] = useState(false);
     const [following, setFollowing] = useState([]);
+    const [ct, setCt] = useState(0)
+
 
     useEffect(() => {
 
@@ -30,7 +32,7 @@ export default function UserPage() {
                     Authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                setUserInfo({ ...userInfo, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
+                setUserInfo({ ...userInfo, id: res.data.id, name: res.data.name, email: res.data.email, picture: res.data.picture, token: res.data.token })
             }).catch(err => {
                 localStorage.clear();
                 navigate("/")
@@ -62,7 +64,7 @@ export default function UserPage() {
             .catch(err => console.log(err))
 
 
-    }, [id, posts]);
+    }, [id, ct]);
 
     function follow() {
         setAble(true)
@@ -157,18 +159,20 @@ export default function UserPage() {
                     </UserContainer>
 
                     <Posts posts={posts}>
-                        {posts.postsUser.map(p => <Post 
-                            key={p.id} 
-                            message={p.message} 
-                            name={posts.name} 
-                            picture={p.picture} 
-                            link={p.link} 
-                            linkTitle={p.linkTitle} 
-                            linkImage={p.linkImage} 
-                            linkDescription={p.linkDescription} 
-                            postId={p.id} 
-                            like_count={p.like_count} 
-                            nameUser={userInfo.name} 
+                        {posts.postsUser.map(p => <Post
+                            ct={ct}
+                            setCt={setCt}
+                            key={p.id}
+                            message={p.message}
+                            name={posts.name}
+                            picture={p.picture}
+                            link={p.link}
+                            linkTitle={p.linkTitle}
+                            linkImage={p.linkImage}
+                            linkDescription={p.linkDescription}
+                            postId={p.id}
+                            like_count={p.like_count}
+                            nameUser={userInfo.name}
                             liked_by={p.liked_by}
                             commentsCount={p.commentsCount}
                             commentsData={p.commentsData}
@@ -176,7 +180,7 @@ export default function UserPage() {
                             userId={p.userId} />)}
                     </Posts>
                 </ContentContainer>
-                <Trending />
+                <Trending ct={ct} />
             </TimelineContainer></>
     )
 }

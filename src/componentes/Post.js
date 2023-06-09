@@ -3,15 +3,18 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { BiRepost } from "react-icons/bi";
 import { AiOutlineHeart, AiFillHeart, AiOutlineComment } from "react-icons/ai";
-import { BsSend } from "react-icons/bs";
+import { BsSend, BsFillPencilFill } from "react-icons/bs";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../ContextAPI/ContextUser";
 import Share from "./Share";
 import LoadingPosts from "./LoadingPosts";
 
+import { BiTrashAlt } from "react-icons/bi";
+import Delete from "../pages/Delete/Delete";
+import api from "../axios";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
+export default function Post({ ct, setCt,message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
     const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -25,8 +28,15 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const token = localStorage.getItem("token")
     const [isReply, setIsReply] = useState(false)
     const [nameRepost, setNameRepost] = useState("adeline")
+    const [activeDelete, setActiveDelete] = useState(false)
+    const [activeUpdate, setActiveUpdate] = useState(false)
+    const [description, setDescription] = useState(message)
+    const inputEl = useRef(null);
+    const [disable, setDisable] = useState(false);
     
-    useEffect(() => { 
+
+
+    useEffect(() => {
         setShowWhoLike("")
         const user = liked_by.some(obj => obj === nameUser)
         const newArray = liked_by.filter(obj => obj !== nameUser);
@@ -46,7 +56,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         } else if (liked_by.length >= 3 && !user) {
             setShowWhoLike(`${liked_by[0]}, ${liked_by[1]} e outras ${liked_by.length - 2} pessoas`)
         }
-
+        
         axios.post(process.env.REACT_APP_API_URL + "/likesCheck", { postId }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -56,10 +66,51 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
         }).catch(err => {
             console.log(err.response.data)
         })
+        if (activeUpdate) {
+            inputEl.current.focus()
+            setDescription(message)
+        }
+    }, [activeUpdate, ct])
 
-    }, [])
+    function handleKeyPress(event) {
+        document.onkeydown = function (e) {
+            if (e.key === "Escape" || e.key === "Enter") setDisable(true)
+            else return
 
+            if (e.key === 'Escape') {
+                setDisable(false)
+                return setActiveUpdate(false)
+            }
+            if (e.key === "Enter") {
 
+                if (description.length > 120) {
+
+                    setDisable(false);
+                    return alert("Caption can not be longer than 120 characters.");
+                }
+
+                const obj = {
+                    id: postId,
+                    description: event.target.value
+                }
+
+                const request = api.put("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
+
+                request.then(() => {
+                    setDisable(false);
+                    setActiveUpdate(false)
+                    setCt(ct+1)
+                });
+
+                request.catch(err => {
+                    alert("There was an error editing your link");
+                    setDisable(false);
+                })
+            }
+        }
+        return setDescription(event.target.value)
+
+    }
 
     function redirectToUrl(link) {
         window.open(link);
@@ -94,6 +145,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             return messageParts.map((part, index) => {
                 if (hashtags.includes(`#${part}`)) {
                     const hashtag = part.replace("#", "");
+
                     return (
                         <HashtagLink key={index} to={`/hashtag/${hashtag}`}>
                             <strong>{`#${part}`}</strong>
@@ -132,6 +184,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             }
         }).then(res => {                                                                                                                                                                                                                                                    
             setComment("");
+            setCt(ct+1);
         }).catch(err => {
             console.log(err.response.data)
         })
@@ -140,7 +193,10 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                 
 
 
+    
+
         <Container showComments={showComments} commentsData={commentsData}>
+            {activeDelete ? <Delete setActiveDelete={setActiveDelete} postId={postId} /> : <></>}
             {showShare && <Share setShowShare={setShowShare} showShare={showShare} /> }                                                                     
         <ReplyPopUp isReply={isReply}>
                 <div>
@@ -167,8 +223,20 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
               
                 </Icons>
                 <div>
-                    <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
-                    <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                    <Infos activeUpdate={activeUpdate}>
+                        <div>
+                            <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
+                            <h3 data-test="description">{renderMessageWithHashtags()}</h3>
+                            <textarea data-test="edit-input" disabled={disable} onChange={(event) => handleKeyPress(event)} ref={inputEl} placeholder={description} value={description}></textarea>
+                        </div>
+
+                        {userId === userInfo.id ? <div><BsFillPencilFill data-test="edit-btn" onClick={() => { setActiveUpdate(!activeUpdate); }} />
+                            <BiTrashAlt data-test="delete-btn" onClick={() => setActiveDelete(!activeDelete)} /></div> : <></>}
+
+
+
+
+                    </Infos>
                     <LinkContainer onClick={() => redirectToUrl(link)}>
                         <div>
                             <h4>{linkTitle}</h4>
@@ -252,6 +320,46 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     }
 
 }
+
+
+const Infos = styled.div`
+width:100%;
+display:flex;
+max-width:100% !important;
+div{
+    width:100%
+}div:nth-child(2){
+    width:14%
+}
+svg:first-child{
+    font-size:17px;
+}
+svg{
+    color:white;
+    font-size:20px;
+    margin-left:8px;
+    cursor:pointer;
+}
+h3{
+    display:${(props) => props.activeUpdate ? "none" : "inicial"};
+}
+textarea{
+    display:${(props) => props.activeUpdate ? "flex" : "none"};
+    width:100%;
+    border-radius:5px;
+    border:0px;
+    flex-wrap:wrap;
+    padding:3px;
+    height:40px;
+    margin-bottom:10px;
+    font-size:14px;
+    font-family:"Lato";
+    font-weight:400;
+    resize: none
+}
+`
+
+
 const CommentInput = styled.div`
         display:flex;
         gap:18px;
