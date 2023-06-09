@@ -10,7 +10,7 @@ import { BiTrashAlt } from "react-icons/bi";
 import Delete from "../pages/Delete/Delete";
 import api from "../axios";
 
-export default function Post({ message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
+export default function Post({ ct, setCt,message, name, picture, link, linkTitle, linkImage, linkDescription, id, like_count, postId, nameUser, liked_by, commentsCount, commentsData, following, userId }) {
     const navigate = useNavigate();
     const { userInfo } = useContext(UserContext)
     const [likeOn, setLikeOn] = useState(false)
@@ -26,6 +26,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
     const [description, setDescription] = useState(message)
     const inputEl = useRef(null);
     const [disable, setDisable] = useState(false);
+    
 
 
     useEffect(() => {
@@ -62,11 +63,9 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             inputEl.current.focus()
             setDescription(message)
         }
-    }, [activeUpdate])
+    }, [activeUpdate, ct])
 
     function handleKeyPress(event) {
-        event.preventDefault()
-
         document.onkeydown = function (e) {
             if (e.key === "Escape" || e.key === "Enter") setDisable(true)
             else return
@@ -91,8 +90,8 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                 const request = api.put("/posts", obj, { headers: { Authorization: `Bearer ${token}` } });
 
                 request.then(() => {
-                    setDisable(false)
-                    window.location.reload(true);
+                    setDisable(false);
+                    window.location.reload()
                 });
 
                 request.catch(err => {
@@ -177,7 +176,7 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
             }
         }).then(res => {
             setComment("");
-            window.location.reload(true);
+            setCt(ct+1);
         }).catch(err => {
             console.log(err.response.data)
         })
@@ -202,11 +201,11 @@ export default function Post({ message, name, picture, link, linkTitle, linkImag
                         <div>
                             <h2 data-test="username" onClick={() => goToUserPage(id)}>{name}</h2>
                             <h3 data-test="description">{renderMessageWithHashtags()}</h3>
-                            <textarea disabled={disable} onChange={(event) => handleKeyPress(event)} ref={inputEl} placeholder={description} value={description}></textarea>
+                            <textarea data-test="edit-input" disabled={disable} onChange={(event) => handleKeyPress(event)} ref={inputEl} placeholder={description} value={description}></textarea>
                         </div>
 
-                        {userId === userInfo.id ? <div><BsFillPencilFill onClick={() => { setActiveUpdate(!activeUpdate); }} />
-                            <BiTrashAlt onClick={() => setActiveDelete(!activeDelete)} /></div> : <></>}
+                        {userId === userInfo.id ? <div><BsFillPencilFill data-test="edit-btn" onClick={() => { setActiveUpdate(!activeUpdate); }} />
+                            <BiTrashAlt data-test="delete-btn" onClick={() => setActiveDelete(!activeDelete)} /></div> : <></>}
 
 
 

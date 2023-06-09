@@ -10,6 +10,8 @@ import axios from "axios";
 import { UserContext } from "../ContextAPI/ContextUser";
 import { LogoutContext } from "../ContextAPI/ContextLogout";
 import Trending from "../componentes/Trending";
+import useInterval from 'use-interval'
+import { TfiReload } from "react-icons/tfi";
 
 export default function TimelinePage() {
     const token = localStorage.getItem("token");
@@ -24,7 +26,33 @@ export default function TimelinePage() {
     const { logoutBox, setLogoutBox } = useContext(LogoutContext);
     const [haveFollowers, setHaveFollowers] = useState(false);
     const [following, setFollowing] = useState([]);
+    const [count, setCount] = useState(0)
+    const [ct, setCt] = useState(0)
+    useInterval(()=>{
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+            .then((res) => {
 
+                if (res.data.length > 0) {
+                    setHaveFollowers(true)
+                    setFollowing(res.data);
+                    const request = api.get("/posts", config);
+                    request.then(response => {
+                        if(response.data.length > 0) {
+                            if(response.data[0].id!==posts[0].id) console.log(true)
+                            else console.log(false)
+                        }
+                    });
+                    request.catch(err => {
+                        setError(true);
+                    });
+                } else setPosts([])
+            }).catch(err => {
+                console.log(err.message);
+            });
+    }, 1000)
     useEffect(() => {
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
@@ -62,8 +90,8 @@ export default function TimelinePage() {
             }).catch(err => {
                 console.log(err.message);
             });
-
-    }, [])
+            
+    }, [ct])
 
     if (error) {
         return (
@@ -100,7 +128,7 @@ export default function TimelinePage() {
             setButtonText("Publishing");
             setLink("");
             setMessage("");
-            window.location.reload(true);
+            setCt(ct+1)
         });
 
         request.catch(err => {
@@ -150,8 +178,15 @@ export default function TimelinePage() {
 
                         </div>
                     </PublishingContainer>
+                    {count>0?<NewPosts>
+                        <p>{count} new posts, load more!</p>
+                        <TfiReload/>
+                    </NewPosts>:<></>}
+                    
                     <Posts posts={posts}>
                         {posts.map(p => <Post key={p.id}
+                            ct={ct}
+                            setCt={setCt}
                             like_count={p.like_count}
                             message={p.message}
                             name={p.name}
@@ -180,7 +215,22 @@ export default function TimelinePage() {
 }
 
 
-
+const NewPosts = styled.div`
+background-color:#1877F2;
+width: 611px;
+height: 61px;
+border-radius:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-weight:400;
+font-family:'Lato';
+font-size:16px;
+svg{
+    margin-left:10px;
+}
+`
 const PublishingContainer = styled.div`
     width: 611px;
     height: 209px;
