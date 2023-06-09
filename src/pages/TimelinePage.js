@@ -36,13 +36,8 @@ export default function TimelinePage() {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
-            .then((res) => {
-
-                if (res.data.length > 0) {
-                    setHaveFollowers(true);
-                    setFollowing(res.data);
-                    const request = api.get("/posts/0",config);
+      
+            const request = api.get("/posts/0" ,config);
                     request.then(response => {
                         if(response.data.length > 0) {
                             if(response.data[0].id!==posts[0].id) {
@@ -64,11 +59,8 @@ export default function TimelinePage() {
                     request.catch(err => {
                         setError(true);
                     });
-                } else setPosts([])
-            }).catch(err => {
-                console.log(err.message);
-            });
-    }, 15000)
+                
+    }, 1000)
     useEffect(() => {
         if (token) {
             axios.post(process.env.REACT_APP_API_URL + "/token", {}, {
@@ -87,29 +79,29 @@ export default function TimelinePage() {
         }
         
         if(count === 0){
-        const config = {
-            headers: { Authorization: `Bearer ${token}` },
-        };
-        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
-            .then((res) => {
-                if (res.data.length===0) setQuantity(false)
-                if (res.data.length > 0) {
-                    setHaveFollowers(true)
-                    setFollowing(res.data);
-                    const request = api.get("/posts/0" ,config);
-                    request.then(response => {
-                        setPosts(response.data)
-                        if (response.data.length<10) setQuantity(false)
-                    });
-                    request.catch(err => {
-                        setError(true);
-                    });
-                } else setPosts([])
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
+            axios.get(process.env.REACT_APP_API_URL + "/followers", config)
+                .then((res) => {
+                       
+                        setHaveFollowers(true)
+                        setFollowing(res.data);
+                        
+                    
             }).catch(err => {
                 console.log(err.message);
             });
+            const request = api.get("/posts/0" ,config);
+            request.then(response => {
+                setPosts(response.data)
+                if (response.data.length<10) setQuantity(false)
+            });
+            request.catch(err => {
+                setError(true);
+            });
         }
-    }, [ct, count])
+}, [ct, count])
 
     if (error) {
         return (
@@ -160,12 +152,8 @@ export default function TimelinePage() {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        axios.get(process.env.REACT_APP_API_URL + "/followers", config)
-            .then((res) => {
+        
 
-                if (res.data.length > 0) {
-                    setHaveFollowers(true)
-                    setFollowing(res.data);
                     const request = api.get("/posts/"+String(loadCount) ,config);
                     request.then(response => {
                         const moreTenPost = []
@@ -183,12 +171,9 @@ export default function TimelinePage() {
                     request.catch(err => {
                         setError(true);
                     });
-                } else setPosts([])
-            }).catch(err => {
-                console.log(err.message);
-            });
-            
-    }
+                }
+           
+           
     if (posts === null) {
         return (
             <><Header />
@@ -227,7 +212,7 @@ export default function TimelinePage() {
                             </form>
                         </div>
                     </PublishingContainer>
-                    {count>0?<NewPosts data-test="load-btn" onClick={()=>{setCount(0)}}>
+                    {count>0?<NewPosts data-test="load-btn" onClick={()=>{setCount(0); setQuantity(true)}}>
                         <p>{count} new posts, load more!</p>
                         <TfiReload/>
                     </NewPosts>:<></>}
