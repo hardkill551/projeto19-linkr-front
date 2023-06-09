@@ -41,8 +41,18 @@ export default function TimelinePage() {
                     const request = api.get("/posts", config);
                     request.then(response => {
                         if(response.data.length > 0) {
-                            if(response.data[0].id!==posts[0].id) console.log(true)
-                            else console.log(false)
+                            if(response.data[0].id!==posts[0].id) {
+                                let newCount = 0
+                                for(let i = 0; i<response.data.length;i++){
+                                    
+                                    if(response.data[i].id!==posts[0].id) {
+                                        newCount += 1
+                                    }
+                                    else if(response.data[i].id===posts[0].id) {
+                                        setCount(newCount)
+                                    }
+                                }
+                            }
                         }
                     });
                     request.catch(err => {
@@ -69,6 +79,7 @@ export default function TimelinePage() {
         else {
             navigate("/")
         }
+        if(count === 0){
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
@@ -90,8 +101,8 @@ export default function TimelinePage() {
             }).catch(err => {
                 console.log(err.message);
             });
-            
-    }, [ct])
+        }
+    }, [ct, count])
 
     if (error) {
         return (
@@ -175,10 +186,9 @@ export default function TimelinePage() {
                                 <textarea data-test="description" className="captionInput" disabled={disabled} type="text" placeholder="Caption" value={message} onChange={e => setMessage(e.target.value)} />
                                 <PublishButton data-test="publish-btn" disabled={disabled} type="submit">{buttonText}</PublishButton>
                             </form>
-
                         </div>
                     </PublishingContainer>
-                    {count>0?<NewPosts>
+                    {count>0?<NewPosts onClick={()=>{setCount(0)}}>
                         <p>{count} new posts, load more!</p>
                         <TfiReload/>
                     </NewPosts>:<></>}
@@ -208,7 +218,7 @@ export default function TimelinePage() {
                     </Posts>
 
                 </ContentContainer>
-                <Trending posts={posts} />
+                <Trending ct={ct} posts={posts} />
             </TimelineContainer>
         </>
     )
@@ -227,6 +237,11 @@ color:white;
 font-weight:400;
 font-family:'Lato';
 font-size:16px;
+margin-bottom:25px;
+cursor: pointer;
+:hover{
+    background-color:#1555FF;
+}
 svg{
     margin-left:10px;
 }

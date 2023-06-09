@@ -91,7 +91,8 @@ export default function Post({ ct, setCt,message, name, picture, link, linkTitle
 
                 request.then(() => {
                     setDisable(false);
-                    window.location.reload()
+                    setActiveUpdate(false)
+                    setCt(ct+1)
                 });
 
                 request.catch(err => {

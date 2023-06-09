@@ -21,6 +21,7 @@ export default function UserPage() {
     const [buttonFollow, setButtonFollow] = useState("Follow")
     const [able, setAble] = useState(false);
     const [following, setFollowing] = useState([]);
+    const [ct, setCt] = useState(0)
 
 
     useEffect(() => {
@@ -63,7 +64,7 @@ export default function UserPage() {
             .catch(err => console.log(err))
 
 
-    }, [id]);
+    }, [id, ct]);
 
     function follow() {
         setAble(true)
@@ -159,6 +160,8 @@ export default function UserPage() {
 
                     <Posts posts={posts}>
                         {posts.postsUser.map(p => <Post
+                            ct={ct}
+                            setCt={setCt}
                             key={p.id}
                             message={p.message}
                             name={posts.name}
@@ -177,7 +180,7 @@ export default function UserPage() {
                             userId={p.userId} />)}
                     </Posts>
                 </ContentContainer>
-                <Trending />
+                <Trending ct={ct} />
             </TimelineContainer></>
     )
 }
