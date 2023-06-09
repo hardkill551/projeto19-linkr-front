@@ -3,7 +3,7 @@ import { DeleteContainer, TabDelete, ButtonDelete, TextDelete } from "./style";
 import { useContext, useState } from "react";
 import { UserContext } from "../../ContextAPI/ContextUser";
 import { ThreeDots } from "react-loader-spinner";
-export default function Delete({ setActiveDelete, postId }) {
+export default function Delete({ setActiveDelete, postId, setCt, ct }) {
     const { userInfo } = useContext(UserContext)
     const [disable, setDisable] = useState(false)
     function DeletePoster() {
@@ -18,7 +18,7 @@ export default function Delete({ setActiveDelete, postId }) {
         }).then(res => {
             setActiveDelete(false)
             setDisable(false)
-            window.location.reload(true);
+            setCt(ct+1)
         }).catch(err => {
             setActiveDelete(false)
             setDisable(false)

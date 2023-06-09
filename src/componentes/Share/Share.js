@@ -4,19 +4,21 @@ import { Button, ButtonContainer, Container, TableContainer, Text } from "./styl
 import { useContext } from "react";
 import { UserContext } from "../../ContextAPI/ContextUser";
 
-export default function Share({setShowShare, postId}) {
+export default function Share({setShowShare, postId, setCt,ct}) {
      const token = localStorage.getItem("token");
         function SharePoster(){
             axios.post(process.env.REACT_APP_API_URL+"/share", {postId},{headers:{
                 Authorization: `Bearer ${token}`
                 }
             }).then(res=>{   
+                setCt(ct+1)
+                setShowShare(false)
                 }).catch(err=>{
                     alert(err.response.data)
                 })
                  
 
-           setShowShare(false)
+           
         }
 
     return(
